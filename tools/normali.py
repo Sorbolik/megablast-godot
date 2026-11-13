@@ -5,17 +5,18 @@ l'interno, poi la pendenza dà la normale. Le linee nere del disegno
 scavano un poco, così i contorni interni prendono luce anche loro.
 Scrive art/apprendista/<pezzo>_n.png accanto a ogni pezzo.
 
-    python3 tools/normali.py
+    python3 tools/normali.py [apprendista | apprendista2]
 """
 import os
+import sys
 import numpy as np
 from PIL import Image
 from scipy import ndimage
 
-CARTELLA = os.path.join(os.path.dirname(__file__), "..", "art", "apprendista")
+CARTELLA = os.path.join(os.path.dirname(__file__), "..", "art", sys.argv[1] if len(sys.argv) > 1 else "apprendista")
 PEZZI = ["busto", "busto_tinta", "braccio", "braccio_dietro", "gamba", "gamba_dietro",
          "coda", "mantello", "testa", "testa_felice", "testa_colpita", "testa_arrabbiata",
-         "testa_paura", "testa_ko"]
+         "testa_paura", "testa_ko", "sciarpa"]
 CUSCINO = 0.18   # quanto è largo il bordo arrotondato, rispetto al pezzo
 FORZA = 2.2      # quanto sono inclinate le normali
 SOLCHI = 0.25    # quanto scavano le linee nere
@@ -38,5 +39,7 @@ def normali(nome):
 
 
 for p in PEZZI:
+    if not os.path.exists(os.path.join(CARTELLA, p + ".png")):
+        continue
     normali(p)
     print(p + "_n.png")

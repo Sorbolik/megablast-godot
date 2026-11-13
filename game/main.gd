@@ -4,7 +4,7 @@ extends Node2D
 ## frame rate (interpolated), the APPRENDISTA rig (game/devil.gd).
 ##
 ## Controls: A/D or arrows walk, W/space/up jump, Q explosion at the feet,
-## E Tonante recoil toward the mouse, X spike extras on/off, L 2D lights on/off, M measurement,
+## E Tonante recoil toward the mouse, X spike extras on/off, L 2D lights on/off, N new/old drawing, M measurement,
 ## F hit face, mouse wheel zoom. On the phone: the buttons at the bottom.
 ##
 ## Command line (after --): --misura N [--secondi S] [--senza-extra]
@@ -23,6 +23,7 @@ var mask_img: Image
 var mask_tex: ImageTexture
 var zoom := NEAR
 var extras := true
+var new_art := true             # the new APPRENDISTA of WB-033 (N, NUOVO)
 var lights := true               # Godot only: 2D lights (L, LUCI)
 var dark: CanvasModulate          # the scene a bit darker, so the lights show
 var touch := {left = false, right = false, jump = false}
@@ -35,6 +36,7 @@ var photo_t := 2.0
 var fx_layer: Node2D
 var sequence: Array = []
 var results: PackedStringArray = []
+var hud_layer: CanvasLayer
 var held := ""                   # keys held from the command line (photos): R L J
 
 
@@ -58,6 +60,8 @@ func _ready() -> void:
 		extras = false
 	if "--senza-luci" in args:
 		lights = false
+	if "--vecchio" in args:
+		new_art = false
 	dark = CanvasModulate.new()
 	add_child(dark)
 	dark.color = DARK if lights else Color.WHITE
@@ -169,7 +173,7 @@ func add_robot(spawn: int) -> Array:
 	if spawn >= World.SPAWNS.size():
 		rb.x += 60 * (spawn / World.SPAWNS.size())
 		rb.y = world.terrain.ground_below(rb.x, rb.y + 200)
-	var d: Devil = Devil.make(extras, lights)
+	var d: Devil = Devil.make(extras, lights, new_art)
 	d.gravity = world.gravity
 	add_child(d)
 	var entry := [rb, d, Vector2(rb.x, rb.y), {line = 0, left = 0, offset = spawn * 37}]
@@ -254,6 +258,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				toggle_extras()
 			KEY_L:
 				toggle_lights()
+			KEY_N:
+				toggle_art()
 			KEY_M:
 				start_sequence()
 			KEY_F:
@@ -270,6 +276,11 @@ func toggle_extras() -> void:
 	respawn_devils()
 
 
+func toggle_art() -> void:
+	new_art = not new_art
+	respawn_devils()
+
+
 func toggle_lights() -> void:
 	lights = not lights
 	dark.color = DARK if lights else Color.WHITE
@@ -279,7 +290,7 @@ func toggle_lights() -> void:
 func respawn_devils() -> void:
 	for e in robots:
 		var old: Devil = e[1]
-		var d: Devil = Devil.make(extras, lights)
+		var d: Devil = Devil.make(extras, lights, new_art)
 		d.gravity = world.gravity
 		add_child(d)
 		e[1] = d
@@ -345,12 +356,13 @@ func _process(dt: float) -> void:
 		var moving: int = e[3].get("moving", 0)
 		e[1].animate(dt, world_to_screen(x, y), rb.grounded, moving, solid)
 	var me: Devil = robots[0][1]
-	cam.position = me.position + Vector2(0, -40)
+	cam.position = me.position + Vector2(0, -40 if photo == "" else -20)
 	cam.zoom = cam.zoom.lerp(Vector2(zoom, zoom), min(1.0, dt * 6))
 	cam.offset = cam.offset.lerp(Vector2.ZERO, min(1.0, dt * 10))
 	update_hud(dt)
 	if photo != "":
 		photo_t -= dt
+		hud_layer.visible = photo_t > 0.3
 		if photo_t <= 0:
 			get_viewport().get_texture().get_image().save_png(photo)
 			print("foto: ", photo)
@@ -361,6 +373,7 @@ func _process(dt: float) -> void:
 
 func build_hud() -> void:
 	var layer := CanvasLayer.new()
+	hud_layer = layer
 	add_child(layer)
 	hud = Label.new()
 	hud.position = Vector2(16, 12)
@@ -379,7 +392,7 @@ func build_hud() -> void:
 	bar.add_theme_constant_override("separation", 12)
 	layer.add_child(bar)
 	for spec in [["◀", "left"], ["▶", "right"], ["", ""], ["SALTA", "jump"], ["BOOM", "boom"],
-			["TONANTE", "eagle"], ["EXTRA", "extra"], ["LUCI", "lights"], ["MISURA", "measure"]]:
+			["TONANTE", "eagle"], ["EXTRA", "extra"], ["LUCI", "lights"], ["NUOVO", "art"], ["MISURA", "measure"]]:
 		if spec[0] == "":
 			var gap := Control.new()
 			gap.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -410,6 +423,8 @@ func button(key: String) -> void:
 			toggle_extras()
 		"lights":
 			toggle_lights()
+		"art":
+			toggle_art()
 		"measure":
 			start_sequence()
 

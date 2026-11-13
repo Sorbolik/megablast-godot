@@ -17,6 +17,8 @@ extends Node2D
 const DISEGNO_H := 39.2          # world px from the feet to the top of the head
 const UNITS := 200.0             # drawing units, same height
 const ART := "res://art/apprendista/"
+## the new APPRENDISTA, drawn to bend (WB-033, tools/prepara_apprendista2.py)
+const ART_NEW := "res://art/apprendista2/"
 ## the APPRENDISTA as a scene of the editor (tools/salva_scena.gd): bones,
 ## meshes, weights and the extras, all editable in Godot
 const SCENE := "res://game/apprendista.tscn"
@@ -36,6 +38,10 @@ const FACES := ["testa", "testa_felice", "testa_colpita", "testa_arrabbiata", "t
 ## every piece has a normal map (tools/normali.py), so the light wraps the
 ## round shapes; explosions flash (game/main.gd).
 @export var lights := true
+## the drawings: ART (today's) or ART_NEW (WB-033: whole limbs, face in layers)
+@export var art := ART
+var brows: Array[Sprite2D] = []
+var mouth: Sprite2D
 
 var k := DISEGNO_H / UNITS
 var rig: Dictionary
@@ -101,7 +107,7 @@ var elbow_v := [0.0, 0.0]
 
 func _ready() -> void:
 	Pose.load_clips("res://data/clip.json")
-	rig = JSON.parse_string(FileAccess.get_file_as_string(ART + "rig.json"))
+	rig = JSON.parse_string(FileAccess.get_file_as_string(art + "rig.json"))
 	scale = Vector2(k, k)
 	if has_node("Scheletro"):
 		bind()
@@ -156,9 +162,12 @@ func lit(t: Texture2D) -> Texture2D:
 
 
 ## a devil: from the editor's scene when there is one, otherwise built here
-static func make(with_extras: bool, with_lights := true) -> Devil:
+static func make(with_extras: bool, with_lights := true, new_art := false) -> Devil:
 	var d: Devil
-	if ResourceLoader.exists(SCENE):
+	if new_art:
+		d = (load("res://game/devil.gd") as GDScript).new()
+		d.art = ART_NEW
+	elif ResourceLoader.exists(SCENE):
 		d = (load(SCENE) as PackedScene).instantiate()
 	else:
 		d = (load("res://game/devil.gd") as GDScript).new()
@@ -206,7 +215,7 @@ func strip_extras() -> void:
 	cape = null
 	glow = null
 	embers = null
-	if eyes_node:
+	if eyes_node and not rig.has("new"):
 		eyes_node.visible = false
 
 
@@ -216,7 +225,7 @@ static func U(px: float, py: float) -> Vector2:
 
 
 func tex(name: String) -> Texture2D:
-	return load(ART + name + ".png")
+	return load(art + name + ".png")
 
 
 # --- the skeleton ----------------------------------------------------------------
@@ -283,13 +292,45 @@ func build() -> void:
 	if pc.busto.tint:
 		var tint := piece("busto", ["busto", "petto"], "busto_tinta")
 		tint.modulate = team_color
+	if rig.has("new"):
+		# the new one: the near limbs under the head, the scarf on the chest,
+		# the face in layers on the head
+		piece("gamba", ["gamba_a", "ginocchio_a", "piede_a"])
+		piece("braccio", ["braccio_a", "gomito_a", "mano_a"])
+		piece("sciarpa", ["petto"])
 	head_poly = piece("testa", [], "testa", head_weights)
 	for fc in FACES:
 		face_tex[fc] = tex(fc)
 	make_eyes()
+	if rig.has("new"):
+		make_face()
 	make_flame()
-	piece("gamba", ["gamba_a", "ginocchio_a", "piede_a"])
-	piece("braccio", ["braccio_a", "gomito_a", "mano_a"])
+	if not rig.has("new"):
+		piece("gamba", ["gamba_a", "ginocchio_a", "piede_a"])
+		piece("braccio", ["braccio_a", "gomito_a", "mano_a"])
+
+
+## the new drawing's face: eyebrows and mouth over the bare head, on the node
+## that follows the head (like the eyes); set_face picks them
+func make_face() -> void:
+	var head: Dictionary = rig.pieces.testa
+	var neck := Vector2(rig.pivots.testa[0], rig.pivots.testa[1])
+	var calm: Array = rig.brows[0]
+	for e in calm:
+		var s := Sprite2D.new()
+		s.name = "sopracciglio_%d" % brows.size()
+		s.texture = tex(e.img)
+		s.position = U(head.cx + e.cx - neck.x, head.cy + e.cy - neck.y)
+		s.scale = Vector2(e.w / s.texture.get_width(), e.h / s.texture.get_height())
+		eyes_node.add_child(s)
+		brows.append(s)
+	var m: Dictionary = rig.mouths[0]
+	mouth = Sprite2D.new()
+	mouth.name = "bocca"
+	mouth.texture = tex(m.img)
+	mouth.position = U(head.cx + m.cx - neck.x, head.cy + m.cy - neck.y)
+	mouth.scale = Vector2(m.w / mouth.texture.get_width(), m.h / mouth.texture.get_height())
+	eyes_node.add_child(mouth)
 
 
 ## the global (skeleton space, godot units) position of a bone at rest
@@ -778,7 +819,16 @@ func set_face(f: String) -> void:
 		return
 	current_face = f
 	head_poly.texture = face_tex[f]
-	if eyes_node:
+	if rig.has("faces"):
+		var fc: Dictionary = rig.faces[f]
+		var pair: Array = rig.brows[int(fc.brows)]
+		for i in range(brows.size()):
+			brows[i].texture = tex(pair[i].img)
+			brows[i].scale = Vector2(pair[i].w / brows[i].texture.get_width(), pair[i].h / brows[i].texture.get_height())
+		var m: Dictionary = rig.mouths[int(fc.mouth)]
+		mouth.texture = tex(m.img)
+		mouth.scale = Vector2(m.w / mouth.texture.get_width(), m.h / mouth.texture.get_height())
+	elif eyes_node:
 		eyes_node.visible = extras and f == "testa"
 
 

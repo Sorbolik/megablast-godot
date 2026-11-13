@@ -1,0 +1,387 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/devil.gd" id="1_m7ut1"]
+[ext_resource type="Texture2D" path="res://art/apprendista/coda.png" id="2_rmxh8"]
+[ext_resource type="Texture2D" path="res://art/apprendista/mantello.png" id="3_xsskm"]
+[ext_resource type="Texture2D" path="res://art/apprendista/braccio_dietro.png" id="4_5orik"]
+[ext_resource type="Texture2D" path="res://art/apprendista/gamba_dietro.png" id="5_jw36s"]
+[ext_resource type="Texture2D" path="res://art/apprendista/busto.png" id="6_h5plm"]
+[ext_resource type="Texture2D" path="res://art/apprendista/busto_tinta.png" id="7_gxdea"]
+[ext_resource type="Texture2D" path="res://art/apprendista/testa.png" id="8_qjgkm"]
+[ext_resource type="Shader" path="res://game/eye.gdshader" id="9_kq8lr"]
+[ext_resource type="Texture2D" path="res://art/apprendista/pupilla_0.png" id="10_4rl5t"]
+[ext_resource type="Texture2D" path="res://art/apprendista/occhio_0.png" id="11_tre46"]
+[ext_resource type="Texture2D" path="res://art/apprendista/pupilla_1.png" id="12_i1hwb"]
+[ext_resource type="Texture2D" path="res://art/apprendista/occhio_1.png" id="13_0u3oq"]
+[ext_resource type="Texture2D" path="res://art/apprendista/fiamma.png" id="14_mp0tv"]
+[ext_resource type="Texture2D" path="res://art/apprendista/gamba.png" id="15_438b7"]
+[ext_resource type="Texture2D" path="res://art/apprendista/braccio.png" id="16_lbq13"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_k7off"]
+blend_mode = 1
+
+[sub_resource type="Gradient" id="Gradient_kdfuj"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_3vfgi"]
+gradient = SubResource("Gradient_kdfuj")
+width = 16
+height = 16
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
+
+[sub_resource type="Gradient" id="Gradient_0embo"]
+colors = PackedColorArray(1, 0.85, 0.3, 1, 1, 0.3, 0.05, 0)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_ggh4a"]
+blend_mode = 1
+
+[sub_resource type="Gradient" id="Gradient_k13oj"]
+colors = PackedColorArray(1, 0.65, 0.2, 0.55, 1, 0.4, 0.1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ubk6o"]
+gradient = SubResource("Gradient_k13oj")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iiae8"]
+shader = ExtResource("9_kq8lr")
+shader_parameter/pupil = ExtResource("10_4rl5t")
+shader_parameter/blink = null
+shader_parameter/look = null
+shader_parameter/lid_color = Color(0.72156864, 0.2627451, 0.16470589, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5e6tu"]
+shader = ExtResource("9_kq8lr")
+shader_parameter/pupil = ExtResource("12_i1hwb")
+shader_parameter/blink = null
+shader_parameter/look = null
+shader_parameter/lid_color = Color(0.72156864, 0.2627451, 0.16470589, 1)
+
+[node name="Apprendista" type="Node2D" unique_id=1281599233]
+scale = Vector2(0.196, 0.196)
+script = ExtResource("1_m7ut1")
+
+[node name="Scheletro" type="Skeleton2D" parent="." unique_id=2058238125]
+
+[node name="corpo" type="Bone2D" parent="Scheletro" unique_id=172761363]
+rest = Transform2D(1, 0, 0, 1, 0, 0)
+auto_calculate_length_and_angle = false
+length = 12.0
+bone_angle = 0.0
+
+[node name="forma" type="Bone2D" parent="Scheletro/corpo" unique_id=723308727]
+rest = Transform2D(1, 0, 0, 1, 0, 0)
+auto_calculate_length_and_angle = false
+length = 12.0
+bone_angle = 0.0
+
+[node name="busto" type="Bone2D" parent="Scheletro/corpo/forma" unique_id=448783064]
+position = Vector2(15.4, -69.2)
+rest = Transform2D(1, 0, 0, 1, 15.4, -69.2)
+auto_calculate_length_and_angle = false
+length = 12.0
+bone_angle = 0.0
+
+[node name="petto" type="Bone2D" parent="Scheletro/corpo/forma/busto" unique_id=1390657944]
+position = Vector2(-10.4, -42.8)
+rest = Transform2D(1, 0, 0, 1, -10.4, -42.8)
+auto_calculate_length_and_angle = false
+length = 12.0
+bone_angle = 0.0
+
+[node name="collo" type="Bone2D" parent="Scheletro/corpo/forma" unique_id=844590324]
+position = Vector2(22, -120.2)
+rest = Transform2D(1, 0, 0, 1, 22, -120.2)
+auto_calculate_length_and_angle = false
+length = 12.0
+bone_angle = 0.0
+
+[node name="cranio" type="Bone2D" parent="Scheletro/corpo/forma/collo" unique_id=857675216]
+position = Vector2(-15, -94.8)
+rest = Transform2D(1, 0, 0, 1, -15, -94.8)
+auto_calculate_length_and_angle = false
+length = 12.0
+bone_angle = 0.0
+
+[node name="fiamma_0" type="Bone2D" parent="Scheletro/corpo/forma/collo" unique_id=1421625621]
+position = Vector2(0, -82)
+rest = Transform2D(1, 0, 0, 1, 0, -82)
+auto_calculate_length_and_angle = false
+length = 12.0
+bone_angle = 0.0
+
+[node name="fiamma_1" type="Bone2D" parent="Scheletro/corpo/forma/collo/fiamma_0" unique_id=139822508]
+position = Vector2(0, -15)
+rest = Transform2D(1, 0, 0, 1, 0, -15)
+auto_calculate_length_and_angle = false
+length = 12.0
+bone_angle = 0.0
+
+[node name="fiamma_2" type="Bone2D" parent="Scheletro/corpo/forma/collo/fiamma_0/fiamma_1" unique_id=1165618557]
+position = Vector2(0, -15)
+rest = Transform2D(1, 0, 0, 1, 0, -15)
+auto_calculate_length_and_angle = false
+length = 12.0
+bone_angle = 0.0
+
+[node name="fiamma_3" type="Bone2D" parent="Scheletro/corpo/forma/collo/fiamma_0/fiamma_1/fiamma_2" unique_id=986496594]
+position = Vector2(0, -15)
+rest = Transform2D(1, 0, 0, 1, 0, -15)
+auto_calculate_length_and_angle = false
+length = 12.0
+bone_angle = 0.0
+
+[node name="braci" type="CPUParticles2D" parent="Scheletro/corpo/forma/collo/fiamma_0/fiamma_1/fiamma_2" unique_id=1215604201]
+material = SubResource("CanvasItemMaterial_k7off")
+amount = 10
+texture = SubResource("GradientTexture2D_3vfgi")
+lifetime = 0.9
+emission_shape = 1
+emission_sphere_radius = 6.0
+direction = Vector2(0, -1)
+spread = 25.0
+gravity = Vector2(0, -60)
+initial_velocity_min = 20.0
+initial_velocity_max = 50.0
+scale_amount_min = 0.12
+scale_amount_max = 0.25
+color_ramp = SubResource("Gradient_0embo")
+
+[node name="bagliore" type="Sprite2D" parent="Scheletro/corpo/forma/collo/fiamma_0/fiamma_1" unique_id=859397508]
+material = SubResource("CanvasItemMaterial_ggh4a")
+scale = Vector2(2, 2.4)
+texture = SubResource("GradientTexture2D_ubk6o")
+
+[node name="segue_testa" type="RemoteTransform2D" parent="Scheletro/corpo/forma/collo" unique_id=1842060717]
+remote_path = NodePath("../../../../../occhi")
+
+[node name="braccio_a" type="Bone2D" parent="Scheletro/corpo/forma" unique_id=385925219]
+position = Vector2(42.4, -113.4)
+rest = Transform2D(1, 0, 0, 1, 42.4, -113.4)
+auto_calculate_length_and_angle = false
+length = 12.0
+bone_angle = 0.0
+
+[node name="gomito_a" type="Bone2D" parent="Scheletro/corpo/forma/braccio_a" unique_id=727674607]
+position = Vector2(-8.5, 27)
+rest = Transform2D(1, 0, 0, 1, -8.5, 27)
+auto_calculate_length_and_angle = false
+length = 12.0
+bone_angle = 0.0
+
+[node name="mano_a" type="Bone2D" parent="Scheletro/corpo/forma/braccio_a/gomito_a" unique_id=1956313678]
+position = Vector2(0, 24)
+rest = Transform2D(1, 0, 0, 1, 0, 24)
+auto_calculate_length_and_angle = false
+length = 12.0
+bone_angle = 0.0
+
+[node name="braccio_d" type="Bone2D" parent="Scheletro/corpo/forma" unique_id=1931104016]
+position = Vector2(-25.2, -110.1)
+rest = Transform2D(1, 0, 0, 1, -25.2, -110.1)
+auto_calculate_length_and_angle = false
+length = 12.0
+bone_angle = 0.0
+
+[node name="gomito_d" type="Bone2D" parent="Scheletro/corpo/forma/braccio_d" unique_id=1895092940]
+position = Vector2(-5.1, 26)
+rest = Transform2D(1, 0, 0, 1, -5.1, 26)
+auto_calculate_length_and_angle = false
+length = 12.0
+bone_angle = 0.0
+
+[node name="mano_d" type="Bone2D" parent="Scheletro/corpo/forma/braccio_d/gomito_d" unique_id=1725899287]
+position = Vector2(0, 26)
+rest = Transform2D(1, 0, 0, 1, 0, 26)
+auto_calculate_length_and_angle = false
+length = 12.0
+bone_angle = 0.0
+
+[node name="gamba_a" type="Bone2D" parent="Scheletro/corpo/forma" unique_id=1283619918]
+position = Vector2(22.2, -74.8)
+rest = Transform2D(1, 0, 0, 1, 22.2, -74.8)
+auto_calculate_length_and_angle = false
+length = 12.0
+bone_angle = 0.0
+
+[node name="ginocchio_a" type="Bone2D" parent="Scheletro/corpo/forma/gamba_a" unique_id=1976272322]
+position = Vector2(-5.2, 34.8)
+rest = Transform2D(1, 0, 0, 1, -5.2, 34.8)
+auto_calculate_length_and_angle = false
+length = 12.0
+bone_angle = 0.0
+
+[node name="piede_a" type="Bone2D" parent="Scheletro/corpo/forma/gamba_a/ginocchio_a" unique_id=971154416]
+position = Vector2(0, 32)
+rest = Transform2D(1, 0, 0, 1, 0, 32)
+auto_calculate_length_and_angle = false
+length = 12.0
+bone_angle = 0.0
+
+[node name="gamba_d" type="Bone2D" parent="Scheletro/corpo/forma" unique_id=1820780311]
+position = Vector2(-17.2, -75.6)
+rest = Transform2D(1, 0, 0, 1, -17.2, -75.6)
+auto_calculate_length_and_angle = false
+length = 12.0
+bone_angle = 0.0
+
+[node name="ginocchio_d" type="Bone2D" parent="Scheletro/corpo/forma/gamba_d" unique_id=1184287257]
+position = Vector2(9.2, 34.6)
+rest = Transform2D(1, 0, 0, 1, 9.2, 34.6)
+auto_calculate_length_and_angle = false
+length = 12.0
+bone_angle = 0.0
+
+[node name="piede_d" type="Bone2D" parent="Scheletro/corpo/forma/gamba_d/ginocchio_d" unique_id=1120035200]
+position = Vector2(0, 32)
+rest = Transform2D(1, 0, 0, 1, 0, 32)
+auto_calculate_length_and_angle = false
+length = 12.0
+bone_angle = 0.0
+
+[node name="coda_0" type="Bone2D" parent="Scheletro/corpo/forma" unique_id=1759944372]
+position = Vector2(-16.1, -72.5)
+rotation = -2.94
+rest = Transform2D(-0.97974896, -0.20022993, 0.20022993, -0.97974896, -16.1, -72.5)
+auto_calculate_length_and_angle = false
+length = 12.0
+bone_angle = 0.0
+
+[node name="coda_1" type="Bone2D" parent="Scheletro/corpo/forma/coda_0" unique_id=1270451854]
+position = Vector2(21.900002, 0)
+rotation = 0.096
+rest = Transform2D(0.99539554, 0.09585261, -0.09585261, 0.99539554, 21.900002, 0)
+auto_calculate_length_and_angle = false
+length = 12.0
+bone_angle = 0.0
+
+[node name="coda_2" type="Bone2D" parent="Scheletro/corpo/forma/coda_0/coda_1" unique_id=107766207]
+position = Vector2(27.099997, 0)
+rotation = 0.407
+rest = Transform2D(0.91831255, 0.39585617, -0.39585617, 0.91831255, 27.099997, 0)
+auto_calculate_length_and_angle = false
+length = 12.0
+bone_angle = 0.0
+
+[node name="coda_3" type="Bone2D" parent="Scheletro/corpo/forma/coda_0/coda_1/coda_2" unique_id=1207092064]
+position = Vector2(23, 0)
+rotation = 0.518
+rest = Transform2D(0.8688112, 0.4951435, -0.4951435, 0.8688112, 23, 0)
+auto_calculate_length_and_angle = false
+length = 12.0
+bone_angle = 0.0
+
+[node name="coda_4" type="Bone2D" parent="Scheletro/corpo/forma/coda_0/coda_1/coda_2/coda_3" unique_id=485722658]
+position = Vector2(25.300005, 0)
+rotation = 0.682
+rest = Transform2D(0.7763136, 0.6303469, -0.6303469, 0.7763136, 25.300005, 0)
+auto_calculate_length_and_angle = false
+length = 12.0
+bone_angle = 0.0
+
+[node name="coda_punta" type="Bone2D" parent="Scheletro/corpo/forma/coda_0/coda_1/coda_2/coda_3/coda_4" unique_id=1803204595]
+position = Vector2(30.599998, 0)
+rest = Transform2D(1, 0, 0, 1, 30.599998, 0)
+auto_calculate_length_and_angle = false
+length = 12.0
+bone_angle = 0.0
+
+[node name="coda" type="Polygon2D" parent="." unique_id=504980087]
+texture = ExtResource("2_rmxh8")
+skeleton = NodePath("../Scheletro")
+polygon = PackedVector2Array(-102.37107, -186.73485, -90.80857, -186.73485, -79.24607, -186.73485, -67.68357, -186.73485, -56.12107, -186.73485, -44.55857, -186.73485, -32.99607, -186.73485, -21.433569, -186.73485, -9.871069, -186.73485, -102.37107, -174.23485, -90.80857, -174.23485, -79.24607, -174.23485, -67.68357, -174.23485, -56.12107, -174.23485, -44.55857, -174.23485, -32.99607, -174.23485, -21.433569, -174.23485, -9.871069, -174.23485, -102.37107, -161.73485, -90.80857, -161.73485, -79.24607, -161.73485, -67.68357, -161.73485, -56.12107, -161.73485, -44.55857, -161.73485, -32.99607, -161.73485, -21.433569, -161.73485, -9.871069, -161.73485, -102.37107, -149.23485, -90.80857, -149.23485, -79.24607, -149.23485, -67.68357, -149.23485, -56.12107, -149.23485, -44.55857, -149.23485, -32.99607, -149.23485, -21.433569, -149.23485, -9.871069, -149.23485, -102.37107, -136.73485, -90.80857, -136.73485, -79.24607, -136.73485, -67.68357, -136.73485, -56.12107, -136.73485, -44.55857, -136.73485, -32.99607, -136.73485, -21.433569, -136.73485, -9.871069, -136.73485, -102.37107, -124.23484, -90.80857, -124.23484, -79.24607, -124.23484, -67.68357, -124.23484, -56.12107, -124.23484, -44.55857, -124.23484, -32.99607, -124.23484, -21.433569, -124.23484, -9.871069, -124.23484, -102.37107, -111.73484, -90.80857, -111.73484, -79.24607, -111.73484, -67.68357, -111.73484, -56.12107, -111.73484, -44.55857, -111.73484, -32.99607, -111.73484, -21.433569, -111.73484, -9.871069, -111.73484, -102.37107, -99.23484, -90.80857, -99.23484, -79.24607, -99.23484, -67.68357, -99.23484, -56.12107, -99.23484, -44.55857, -99.23484, -32.99607, -99.23484, -21.433569, -99.23484, -9.871069, -99.23484, -102.37107, -86.73484, -90.80857, -86.73484, -79.24607, -86.73484, -67.68357, -86.73484, -56.12107, -86.73484, -44.55857, -86.73484, -32.99607, -86.73484, -21.433569, -86.73484, -9.871069, -86.73484, -102.37107, -74.23484, -90.80857, -74.23484, -79.24607, -74.23484, -67.68357, -74.23484, -56.12107, -74.23484, -44.55857, -74.23484, -32.99607, -74.23484, -21.433569, -74.23484, -9.871069, -74.23484, -102.37107, -61.734844, -90.80857, -61.734844, -79.24607, -61.734844, -67.68357, -61.734844, -56.12107, -61.734844, -44.55857, -61.734844, -32.99607, -61.734844, -21.433569, -61.734844, -9.871069, -61.734844)
+uv = PackedVector2Array(0, 0, 46.25, 0, 92.5, 0, 138.75, 0, 185, 0, 231.25, 0, 277.5, 0, 323.75, 0, 370, 0, 0, 50, 46.25, 50, 92.5, 50, 138.75, 50, 185, 50, 231.25, 50, 277.5, 50, 323.75, 50, 370, 50, 0, 100, 46.25, 100, 92.5, 100, 138.75, 100, 185, 100, 231.25, 100, 277.5, 100, 323.75, 100, 370, 100, 0, 150, 46.25, 150, 92.5, 150, 138.75, 150, 185, 150, 231.25, 150, 277.5, 150, 323.75, 150, 370, 150, 0, 200, 46.25, 200, 92.5, 200, 138.75, 200, 185, 200, 231.25, 200, 277.5, 200, 323.75, 200, 370, 200, 0, 250, 46.25, 250, 92.5, 250, 138.75, 250, 185, 250, 231.25, 250, 277.5, 250, 323.75, 250, 370, 250, 0, 300, 46.25, 300, 92.5, 300, 138.75, 300, 185, 300, 231.25, 300, 277.5, 300, 323.75, 300, 370, 300, 0, 350, 46.25, 350, 92.5, 350, 138.75, 350, 185, 350, 231.25, 350, 277.5, 350, 323.75, 350, 370, 350, 0, 400, 46.25, 400, 92.5, 400, 138.75, 400, 185, 400, 231.25, 400, 277.5, 400, 323.75, 400, 370, 400, 0, 450, 46.25, 450, 92.5, 450, 138.75, 450, 185, 450, 231.25, 450, 277.5, 450, 323.75, 450, 370, 450, 0, 500, 46.25, 500, 92.5, 500, 138.75, 500, 185, 500, 231.25, 500, 277.5, 500, 323.75, 500, 370, 500)
+polygons = [PackedInt32Array(0, 1, 10, 9), PackedInt32Array(1, 2, 11, 10), PackedInt32Array(2, 3, 12, 11), PackedInt32Array(3, 4, 13, 12), PackedInt32Array(4, 5, 14, 13), PackedInt32Array(5, 6, 15, 14), PackedInt32Array(6, 7, 16, 15), PackedInt32Array(7, 8, 17, 16), PackedInt32Array(9, 10, 19, 18), PackedInt32Array(10, 11, 20, 19), PackedInt32Array(11, 12, 21, 20), PackedInt32Array(12, 13, 22, 21), PackedInt32Array(13, 14, 23, 22), PackedInt32Array(14, 15, 24, 23), PackedInt32Array(15, 16, 25, 24), PackedInt32Array(16, 17, 26, 25), PackedInt32Array(18, 19, 28, 27), PackedInt32Array(19, 20, 29, 28), PackedInt32Array(20, 21, 30, 29), PackedInt32Array(21, 22, 31, 30), PackedInt32Array(22, 23, 32, 31), PackedInt32Array(23, 24, 33, 32), PackedInt32Array(24, 25, 34, 33), PackedInt32Array(25, 26, 35, 34), PackedInt32Array(27, 28, 37, 36), PackedInt32Array(28, 29, 38, 37), PackedInt32Array(29, 30, 39, 38), PackedInt32Array(30, 31, 40, 39), PackedInt32Array(31, 32, 41, 40), PackedInt32Array(32, 33, 42, 41), PackedInt32Array(33, 34, 43, 42), PackedInt32Array(34, 35, 44, 43), PackedInt32Array(36, 37, 46, 45), PackedInt32Array(37, 38, 47, 46), PackedInt32Array(38, 39, 48, 47), PackedInt32Array(39, 40, 49, 48), PackedInt32Array(40, 41, 50, 49), PackedInt32Array(41, 42, 51, 50), PackedInt32Array(42, 43, 52, 51), PackedInt32Array(43, 44, 53, 52), PackedInt32Array(45, 46, 55, 54), PackedInt32Array(46, 47, 56, 55), PackedInt32Array(47, 48, 57, 56), PackedInt32Array(48, 49, 58, 57), PackedInt32Array(49, 50, 59, 58), PackedInt32Array(50, 51, 60, 59), PackedInt32Array(51, 52, 61, 60), PackedInt32Array(52, 53, 62, 61), PackedInt32Array(54, 55, 64, 63), PackedInt32Array(55, 56, 65, 64), PackedInt32Array(56, 57, 66, 65), PackedInt32Array(57, 58, 67, 66), PackedInt32Array(58, 59, 68, 67), PackedInt32Array(59, 60, 69, 68), PackedInt32Array(60, 61, 70, 69), PackedInt32Array(61, 62, 71, 70), PackedInt32Array(63, 64, 73, 72), PackedInt32Array(64, 65, 74, 73), PackedInt32Array(65, 66, 75, 74), PackedInt32Array(66, 67, 76, 75), PackedInt32Array(67, 68, 77, 76), PackedInt32Array(68, 69, 78, 77), PackedInt32Array(69, 70, 79, 78), PackedInt32Array(70, 71, 80, 79), PackedInt32Array(72, 73, 82, 81), PackedInt32Array(73, 74, 83, 82), PackedInt32Array(74, 75, 84, 83), PackedInt32Array(75, 76, 85, 84), PackedInt32Array(76, 77, 86, 85), PackedInt32Array(77, 78, 87, 86), PackedInt32Array(78, 79, 88, 87), PackedInt32Array(79, 80, 89, 88), PackedInt32Array(81, 82, 91, 90), PackedInt32Array(82, 83, 92, 91), PackedInt32Array(83, 84, 93, 92), PackedInt32Array(84, 85, 94, 93), PackedInt32Array(85, 86, 95, 94), PackedInt32Array(86, 87, 96, 95), PackedInt32Array(87, 88, 97, 96), PackedInt32Array(88, 89, 98, 97)]
+bones = ["corpo/forma/coda_0", PackedFloat32Array(0.2, 0.19999988, 0.19999854, 0.19999991, 0.2, 0.2, 0.2, 0.2, 0.2, 0.19993874, 0.10352, 0.01526951, 0.11975098, 0.19996832, 0.2, 0.2, 0.2, 0.2, 0.10749971, 7.637866e-05, 5.8860537e-06, 0.000106208696, 0.13842095, 0.19999991, 0.2, 0.2, 0.2, 0.005060415, 6.4317915e-06, 1.03929e-06, 2.226374e-05, 0.06403851, 0.19999957, 0.2, 0.2, 0.2, 0.00019168059, 1.747457e-06, 1.8308754e-06, 0.00024065858, 0.19073202, 0.2, 0.2, 0.2, 0.2, 1.394456e-05, 5.196725e-07, 3.5146652e-06, 0.0029992075, 0.19988027, 0.2, 0.2, 0.2, 0.2, 0.0001329527, 1.5416542e-06, 1.7626459e-06, 0.00019201366, 0.13232014, 0.1999017, 0.2000009, 0.20000006, 0.2, 0.003105319, 3.291151e-06, 5.197861e-07, 3.4847242e-06, 8.555766e-05, 0.028220775, 0.45106643, 0.45818856, 0.23217005, 0.0938857, 0.000111186375, 4.1025046e-06, 6.2042847e-07, 0.000118765165, 0.13286717, 0.53173035, 0.9800502, 0.9994454, 0.1999877, 0.1527271, 0.00058330724, 7.165399e-06, 0.0024896825, 0.32856867, 0.624792, 0.99567646, 0.9999903, 0.2, 0.19999947, 0.19112514, 0.03014677, 0.028446218, 0.4739567, 0.7591162, 0.9992177, 0.999906), "corpo/forma/coda_0/coda_1", PackedFloat32Array(0.2, 0.19999988, 0.19999854, 0.19999991, 0.2, 0.2, 0.2, 0.2, 0.2, 0.19993874, 0.10352, 0.01526951, 0.11975098, 0.19996832, 0.2, 0.2, 0.2, 0.2, 0.10749971, 7.637866e-05, 5.8860537e-06, 0.000106208696, 0.13842095, 0.19999991, 0.2, 0.2, 0.2, 0.005060415, 6.4317915e-06, 1.03929e-06, 2.226374e-05, 0.06403851, 0.19999957, 0.2, 0.2, 0.2, 0.00019168059, 1.747457e-06, 1.8308754e-06, 0.00024065858, 0.19073202, 0.2, 0.2, 0.2, 0.2, 1.394456e-05, 5.196725e-07, 3.5146652e-06, 0.0029992075, 0.19988027, 0.2, 0.2, 0.2, 0.2, 0.0001329527, 1.5416543e-06, 1.7668511e-06, 0.0002433545, 0.14924023, 0.20033412, 0.20000318, 0.2, 0.2, 0.003105319, 3.3024232e-06, 4.727667e-05, 0.0351344, 0.46860406, 0.9472079, 0.4957754, 0.15347922, 0.19195835, 0.0938857, 0.00013558533, 0.023648314, 0.40024713, 0.70101255, 0.86547506, 0.46825406, 0.019862996, 0.00014095318, 0.1999877, 0.15637594, 0.36659357, 0.49998915, 0.88805586, 0.67135745, 0.37520605, 0.004320538, 2.6744615e-06, 0.2, 0.20000035, 0.21331227, 0.48723778, 0.9428763, 0.5256231, 0.24076435, 0.00073525053, 2.3529845e-05), "corpo/forma/coda_0/coda_1/coda_2", PackedFloat32Array(0.2, 0.19999988, 0.19999854, 0.19999991, 0.2, 0.2, 0.2, 0.2, 0.2, 0.19993874, 0.10352, 0.01526951, 0.11975098, 0.19996832, 0.2, 0.2, 0.2, 0.2, 0.10749971, 7.637866e-05, 5.8860537e-06, 0.000106208696, 0.13842095, 0.19999991, 0.2, 0.2, 0.2, 0.005060415, 6.4317915e-06, 1.03929e-06, 2.226374e-05, 0.06403851, 0.19999957, 0.2, 0.2, 0.2, 0.00019168059, 1.7474572e-06, 1.8308766e-06, 0.00024065858, 0.19073202, 0.2, 0.2, 0.2, 0.2, 1.395044e-05, 8.650832e-07, 1.9229039e-05, 0.003384129, 0.19988407, 0.2, 0.2, 0.2, 0.2, 0.00075491884, 0.01137044, 0.08744049, 0.30652493, 0.42671394, 0.19996329, 0.19999865, 0.19999997, 0.2, 0.2769889, 0.45758557, 0.5138198, 0.8713039, 0.53087234, 0.02074373, 0.017720403, 0.12944406, 0.1919572, 0.35917145, 0.50427705, 0.8534165, 0.5992181, 0.29886666, 0.0016525496, 5.212881e-06, 2.8924853e-05, 0.00013788993, 0.20001848, 0.34840786, 0.630705, 0.49998915, 0.10944797, 7.18196e-05, 6.623856e-07, 1.0038189e-06, 2.347235e-06, 0.2, 0.20000125, 0.21331227, 0.42232695, 0.022458138, 0.0001412489, 3.982868e-05, 1.5681368e-05, 2.3494917e-05), "corpo/forma/coda_0/coda_1/coda_2/coda_3", PackedFloat32Array(0.2, 0.19999988, 0.19999854, 0.19999991, 0.2, 0.2, 0.2, 0.2, 0.2, 0.19993874, 0.10352, 0.01526951, 0.11975098, 0.19996832, 0.2, 0.2, 0.2, 0.2, 0.10749971, 7.637867e-05, 5.8860537e-06, 0.000106208696, 0.13842095, 0.19999991, 0.2, 0.2, 0.2, 0.0053106183, 1.4958026e-05, 1.196915e-06, 2.2265389e-05, 0.06403851, 0.19999957, 0.2, 0.2, 0.2, 0.19597106, 0.047855135, 0.0057380805, 0.0006087703, 0.19073263, 0.2, 0.2, 0.2, 0.2, 0.49997908, 0.4995544, 0.45673433, 0.4172919, 0.20011666, 0.2, 0.2, 0.2, 0.2, 0.7145042, 0.90022564, 0.9009907, 0.6922327, 0.15940468, 0.19990046, 0.19999865, 0.19999997, 0.2, 0.713022, 0.5423854, 0.48613152, 0.09355471, 0.00035519106, 0.0019137765, 0.017718885, 0.12944406, 0.1919572, 0.35917145, 0.49536502, 0.12292698, 0.00053357036, 1.0694315e-06, 2.6172902e-06, 5.18442e-06, 2.8924853e-05, 0.00013788993, 0.20001845, 0.18976201, 0.0015347879, 7.442701e-06, 3.2542753e-06, 1.0313983e-06, 6.6199e-07, 1.0038189e-06, 2.347235e-06, 0.2, 0.19999947, 0.19112517, 0.030144257, 0.0031096826, 0.00013947787, 3.9828676e-05, 1.5681368e-05, 2.3494917e-05), "corpo/forma/coda_0/coda_1/coda_2/coda_3/coda_4", PackedFloat32Array(0.2, 0.20000045, 0.20000586, 0.20000033, 0.2, 0.2, 0.2, 0.2, 0.2, 0.20024502, 0.58592004, 0.938922, 0.5209961, 0.2001267, 0.2, 0.2, 0.2, 0.2, 0.5700012, 0.99969447, 0.99997646, 0.99957514, 0.4463162, 0.20000036, 0.2, 0.2, 0.2, 0.97950816, 0.9999657, 0.9999957, 0.99991095, 0.74384594, 0.20000172, 0.2, 0.2, 0.2, 0.8034539, 0.9521396, 0.99425644, 0.99866927, 0.2370713, 0.20000002, 0.2, 0.2, 0.2, 0.49997908, 0.5004437, 0.5432394, 0.5733256, 0.20023872, 0.2, 0.2, 0.2, 0.2, 0.284475, 0.08840086, 0.011565287, 0.00080699957, 0.13232102, 0.19990043, 0.19999865, 0.19999997, 0.2, 0.0037784881, 2.2419767e-05, 8.6542576e-07, 3.4858542e-06, 8.282693e-05, 0.0019137732, 0.017718885, 0.12944406, 0.1919572, 0.0938857, 0.000111186484, 4.102505e-06, 6.196563e-07, 9.67505e-07, 2.6172902e-06, 5.18442e-06, 2.8924853e-05, 0.00013788993, 0.1999877, 0.1527271, 0.00058330724, 7.109802e-06, 3.2542566e-06, 1.0313983e-06, 6.6199e-07, 1.0038189e-06, 2.347235e-06, 0.2, 0.19999947, 0.19112514, 0.030144257, 0.0031096826, 0.00013947787, 3.9828676e-05, 1.5681368e-05, 2.3494917e-05)]
+
+[node name="mantello" type="Polygon2D" parent="." unique_id=1455242596]
+texture = ExtResource("3_xsskm")
+polygon = PackedVector2Array(-64.65, -122.05, -42.975, -122.05, -21.3, -122.05, 0.375, -122.05, 22.05, -122.05, -64.65, -104.6, -42.975, -104.6, -21.3, -104.6, 0.375, -104.6, 22.05, -104.6, -64.65, -87.15, -42.975, -87.15, -21.3, -87.15, 0.375, -87.15, 22.05, -87.15, -64.65, -69.7, -42.975, -69.7, -21.3, -69.7, 0.375, -69.7, 22.05, -69.7, -64.65, -52.25, -42.975, -52.25, -21.3, -52.25, 0.375, -52.25, 22.05, -52.25, -64.65, -34.800003, -42.975, -34.800003, -21.3, -34.800003, 0.375, -34.800003, 22.05, -34.800003, -64.65, -17.349998, -42.975, -17.349998, -21.3, -17.349998, 0.375, -17.349998, 22.05, -17.349998)
+uv = PackedVector2Array(0, 0, 65, 0, 130, 0, 195, 0, 260, 0, 0, 52.333332, 65, 52.333332, 130, 52.333332, 195, 52.333332, 260, 52.333332, 0, 104.666664, 65, 104.666664, 130, 104.666664, 195, 104.666664, 260, 104.666664, 0, 157, 65, 157, 130, 157, 195, 157, 260, 157, 0, 209.33333, 65, 209.33333, 130, 209.33333, 195, 209.33333, 260, 209.33333, 0, 261.66666, 65, 261.66666, 130, 261.66666, 195, 261.66666, 260, 261.66666, 0, 314, 65, 314, 130, 314, 195, 314, 260, 314)
+polygons = [PackedInt32Array(0, 1, 6, 5), PackedInt32Array(1, 2, 7, 6), PackedInt32Array(2, 3, 8, 7), PackedInt32Array(3, 4, 9, 8), PackedInt32Array(5, 6, 11, 10), PackedInt32Array(6, 7, 12, 11), PackedInt32Array(7, 8, 13, 12), PackedInt32Array(8, 9, 14, 13), PackedInt32Array(10, 11, 16, 15), PackedInt32Array(11, 12, 17, 16), PackedInt32Array(12, 13, 18, 17), PackedInt32Array(13, 14, 19, 18), PackedInt32Array(15, 16, 21, 20), PackedInt32Array(16, 17, 22, 21), PackedInt32Array(17, 18, 23, 22), PackedInt32Array(18, 19, 24, 23), PackedInt32Array(20, 21, 26, 25), PackedInt32Array(21, 22, 27, 26), PackedInt32Array(22, 23, 28, 27), PackedInt32Array(23, 24, 29, 28), PackedInt32Array(25, 26, 31, 30), PackedInt32Array(26, 27, 32, 31), PackedInt32Array(27, 28, 33, 32), PackedInt32Array(28, 29, 34, 33)]
+metadata/cols = 4
+metadata/rows = 6
+
+[node name="braccio_dietro" type="Polygon2D" parent="." unique_id=1434387466]
+texture = ExtResource("4_5orik")
+skeleton = NodePath("../Scheletro")
+polygon = PackedVector2Array(-45.3, -120.65, -40.3, -120.65, -35.3, -120.65, -30.3, -120.65, -25.3, -120.65, -20.3, -120.65, -15.3, -120.65, -45.3, -111.5125, -40.3, -111.5125, -35.3, -111.5125, -30.3, -111.5125, -25.3, -111.5125, -20.3, -111.5125, -15.3, -111.5125, -45.3, -102.375, -40.3, -102.375, -35.3, -102.375, -30.3, -102.375, -25.3, -102.375, -20.3, -102.375, -15.3, -102.375, -45.3, -93.2375, -40.3, -93.2375, -35.3, -93.2375, -30.3, -93.2375, -25.3, -93.2375, -20.3, -93.2375, -15.3, -93.2375, -45.3, -84.1, -40.3, -84.1, -35.3, -84.1, -30.3, -84.1, -25.3, -84.1, -20.3, -84.1, -15.3, -84.1, -45.3, -74.9625, -40.3, -74.9625, -35.3, -74.9625, -30.3, -74.9625, -25.3, -74.9625, -20.3, -74.9625, -15.3, -74.9625, -45.3, -65.825, -40.3, -65.825, -35.3, -65.825, -30.3, -65.825, -25.3, -65.825, -20.3, -65.825, -15.3, -65.825, -45.3, -56.6875, -40.3, -56.6875, -35.3, -56.6875, -30.3, -56.6875, -25.3, -56.6875, -20.3, -56.6875, -15.3, -56.6875, -45.3, -47.55, -40.3, -47.55, -35.3, -47.55, -30.3, -47.55, -25.3, -47.55, -20.3, -47.55, -15.3, -47.55)
+uv = PackedVector2Array(0, 0, 5.8333335, 0, 11.666667, 0, 17.5, 0, 23.333334, 0, 29.166666, 0, 35, 0, 0, 10.75, 5.8333335, 10.75, 11.666667, 10.75, 17.5, 10.75, 23.333334, 10.75, 29.166666, 10.75, 35, 10.75, 0, 21.5, 5.8333335, 21.5, 11.666667, 21.5, 17.5, 21.5, 23.333334, 21.5, 29.166666, 21.5, 35, 21.5, 0, 32.25, 5.8333335, 32.25, 11.666667, 32.25, 17.5, 32.25, 23.333334, 32.25, 29.166666, 32.25, 35, 32.25, 0, 43, 5.8333335, 43, 11.666667, 43, 17.5, 43, 23.333334, 43, 29.166666, 43, 35, 43, 0, 53.75, 5.8333335, 53.75, 11.666667, 53.75, 17.5, 53.75, 23.333334, 53.75, 29.166666, 53.75, 35, 53.75, 0, 64.5, 5.8333335, 64.5, 11.666667, 64.5, 17.5, 64.5, 23.333334, 64.5, 29.166666, 64.5, 35, 64.5, 0, 75.25, 5.8333335, 75.25, 11.666667, 75.25, 17.5, 75.25, 23.333334, 75.25, 29.166666, 75.25, 35, 75.25, 0, 86, 5.8333335, 86, 11.666667, 86, 17.5, 86, 23.333334, 86, 29.166666, 86, 35, 86)
+polygons = [PackedInt32Array(0, 1, 8, 7), PackedInt32Array(1, 2, 9, 8), PackedInt32Array(2, 3, 10, 9), PackedInt32Array(3, 4, 11, 10), PackedInt32Array(4, 5, 12, 11), PackedInt32Array(5, 6, 13, 12), PackedInt32Array(7, 8, 15, 14), PackedInt32Array(8, 9, 16, 15), PackedInt32Array(9, 10, 17, 16), PackedInt32Array(10, 11, 18, 17), PackedInt32Array(11, 12, 19, 18), PackedInt32Array(12, 13, 20, 19), PackedInt32Array(14, 15, 22, 21), PackedInt32Array(15, 16, 23, 22), PackedInt32Array(16, 17, 24, 23), PackedInt32Array(17, 18, 25, 24), PackedInt32Array(18, 19, 26, 25), PackedInt32Array(19, 20, 27, 26), PackedInt32Array(21, 22, 29, 28), PackedInt32Array(22, 23, 30, 29), PackedInt32Array(23, 24, 31, 30), PackedInt32Array(24, 25, 32, 31), PackedInt32Array(25, 26, 33, 32), PackedInt32Array(26, 27, 34, 33), PackedInt32Array(28, 29, 36, 35), PackedInt32Array(29, 30, 37, 36), PackedInt32Array(30, 31, 38, 37), PackedInt32Array(31, 32, 39, 38), PackedInt32Array(32, 33, 40, 39), PackedInt32Array(33, 34, 41, 40), PackedInt32Array(35, 36, 43, 42), PackedInt32Array(36, 37, 44, 43), PackedInt32Array(37, 38, 45, 44), PackedInt32Array(38, 39, 46, 45), PackedInt32Array(39, 40, 47, 46), PackedInt32Array(40, 41, 48, 47), PackedInt32Array(42, 43, 50, 49), PackedInt32Array(43, 44, 51, 50), PackedInt32Array(44, 45, 52, 51), PackedInt32Array(45, 46, 53, 52), PackedInt32Array(46, 47, 54, 53), PackedInt32Array(47, 48, 55, 54), PackedInt32Array(49, 50, 57, 56), PackedInt32Array(50, 51, 58, 57), PackedInt32Array(51, 52, 59, 58), PackedInt32Array(52, 53, 60, 59), PackedInt32Array(53, 54, 61, 60), PackedInt32Array(54, 55, 62, 61)]
+bones = ["corpo/forma/braccio_d", PackedFloat32Array(0.9860052, 0.988601, 0.99071866, 0.99244547, 0.9938526, 0.9949987, 0.99593145, 0.91267365, 0.92680615, 0.939236, 0.9499968, 0.9589851, 0.9664146, 0.9725365, 0.7153197, 0.7394299, 0.76354074, 0.7873311, 0.8104864, 0.83271235, 0.85374886, 0.53753424, 0.55028355, 0.5648213, 0.5810849, 0.5989866, 0.6184088, 0.6392002, 0.5, 0.5, 0.5, 0.5, 0.50094247, 0.5037699, 0.5084815, 0.41585368, 0.4158536, 0.41585353, 0.41585353, 0.41585353, 0.41585356, 0.41585368, 0.20435898, 0.20435844, 0.20435826, 0.20435824, 0.2043583, 0.2043585, 0.20435892, 0.045208737, 0.045207858, 0.045207515, 0.04520742, 0.045207523, 0.045207854, 0.045208737, 0.0068031847, 0.0068016443, 0.006801035, 0.00680087, 0.0068010357, 0.006801646, 0.006803178), "corpo/forma/braccio_d/gomito_d", PackedFloat32Array(0.013994818, 0.011398954, 0.00928131, 0.007554556, 0.0061473623, 0.0050012954, 0.0040685725, 0.08732634, 0.07319383, 0.06076404, 0.05000315, 0.041014925, 0.033585414, 0.027463509, 0.2846803, 0.2605701, 0.23645929, 0.2126689, 0.18951364, 0.16728763, 0.14625113, 0.46246576, 0.44971642, 0.43517867, 0.41891506, 0.4010134, 0.3815912, 0.36079982, 0.5, 0.5, 0.5, 0.5, 0.49905753, 0.49623016, 0.49151853, 0.5841463, 0.5841464, 0.5841465, 0.5841465, 0.58414644, 0.58414644, 0.5841463, 0.795641, 0.79564154, 0.7956417, 0.7956418, 0.7956417, 0.7956415, 0.79564106, 0.95479125, 0.95479214, 0.9547925, 0.95479256, 0.9547925, 0.95479214, 0.95479125, 0.99319685, 0.99319834, 0.993199, 0.9931991, 0.993199, 0.99319834, 0.99319685)]
+
+[node name="gamba_dietro" type="Polygon2D" parent="." unique_id=62059166]
+texture = ExtResource("5_jw36s")
+skeleton = NodePath("../Scheletro")
+polygon = PackedVector2Array(-37.35, -86, -27.3, -86, -17.25, -86, -7.2, -86, 2.85, -86, 12.9, -86, 22.95, -86, -37.35, -76, -27.3, -76, -17.25, -76, -7.2, -76, 2.85, -76, 12.9, -76, 22.95, -76, -37.35, -66, -27.3, -66, -17.25, -66, -7.2, -66, 2.85, -66, 12.9, -66, 22.95, -66, -37.35, -56, -27.3, -56, -17.25, -56, -7.2, -56, 2.85, -56, 12.9, -56, 22.95, -56, -37.35, -46, -27.3, -46, -17.25, -46, -7.2, -46, 2.85, -46, 12.9, -46, 22.95, -46, -37.35, -36, -27.3, -36, -17.25, -36, -7.2, -36, 2.85, -36, 12.9, -36, 22.95, -36, -37.35, -26, -27.3, -26, -17.25, -26, -7.2, -26, 2.85, -26, 12.9, -26, 22.95, -26, -37.35, -16, -27.3, -16, -17.25, -16, -7.2, -16, 2.85, -16, 12.9, -16, 22.95, -16, -37.35, -6, -27.3, -6, -17.25, -6, -7.2, -6, 2.85, -6, 12.9, -6, 22.95, -6)
+uv = PackedVector2Array(0, 0, 11.833333, 0, 23.666666, 0, 35.5, 0, 47.333332, 0, 59.166668, 0, 71, 0, 0, 11.75, 11.833333, 11.75, 23.666666, 11.75, 35.5, 11.75, 47.333332, 11.75, 59.166668, 11.75, 71, 11.75, 0, 23.5, 11.833333, 23.5, 23.666666, 23.5, 35.5, 23.5, 47.333332, 23.5, 59.166668, 23.5, 71, 23.5, 0, 35.25, 11.833333, 35.25, 23.666666, 35.25, 35.5, 35.25, 47.333332, 35.25, 59.166668, 35.25, 71, 35.25, 0, 47, 11.833333, 47, 23.666666, 47, 35.5, 47, 47.333332, 47, 59.166668, 47, 71, 47, 0, 58.75, 11.833333, 58.75, 23.666666, 58.75, 35.5, 58.75, 47.333332, 58.75, 59.166668, 58.75, 71, 58.75, 0, 70.5, 11.833333, 70.5, 23.666666, 70.5, 35.5, 70.5, 47.333332, 70.5, 59.166668, 70.5, 71, 70.5, 0, 82.25, 11.833333, 82.25, 23.666666, 82.25, 35.5, 82.25, 47.333332, 82.25, 59.166668, 82.25, 71, 82.25, 0, 94, 11.833333, 94, 23.666666, 94, 35.5, 94, 47.333332, 94, 59.166668, 94, 71, 94)
+polygons = [PackedInt32Array(0, 1, 8, 7), PackedInt32Array(1, 2, 9, 8), PackedInt32Array(2, 3, 10, 9), PackedInt32Array(3, 4, 11, 10), PackedInt32Array(4, 5, 12, 11), PackedInt32Array(5, 6, 13, 12), PackedInt32Array(7, 8, 15, 14), PackedInt32Array(8, 9, 16, 15), PackedInt32Array(9, 10, 17, 16), PackedInt32Array(10, 11, 18, 17), PackedInt32Array(11, 12, 19, 18), PackedInt32Array(12, 13, 20, 19), PackedInt32Array(14, 15, 22, 21), PackedInt32Array(15, 16, 23, 22), PackedInt32Array(16, 17, 24, 23), PackedInt32Array(17, 18, 25, 24), PackedInt32Array(18, 19, 26, 25), PackedInt32Array(19, 20, 27, 26), PackedInt32Array(21, 22, 29, 28), PackedInt32Array(22, 23, 30, 29), PackedInt32Array(23, 24, 31, 30), PackedInt32Array(24, 25, 32, 31), PackedInt32Array(25, 26, 33, 32), PackedInt32Array(26, 27, 34, 33), PackedInt32Array(28, 29, 36, 35), PackedInt32Array(29, 30, 37, 36), PackedInt32Array(30, 31, 38, 37), PackedInt32Array(31, 32, 39, 38), PackedInt32Array(32, 33, 40, 39), PackedInt32Array(33, 34, 41, 40), PackedInt32Array(35, 36, 43, 42), PackedInt32Array(36, 37, 44, 43), PackedInt32Array(37, 38, 45, 44), PackedInt32Array(38, 39, 46, 45), PackedInt32Array(39, 40, 47, 46), PackedInt32Array(40, 41, 48, 47), PackedInt32Array(42, 43, 50, 49), PackedInt32Array(43, 44, 51, 50), PackedInt32Array(44, 45, 52, 51), PackedInt32Array(45, 46, 53, 52), PackedInt32Array(46, 47, 54, 53), PackedInt32Array(47, 48, 55, 54), PackedInt32Array(49, 50, 57, 56), PackedInt32Array(50, 51, 58, 57), PackedInt32Array(51, 52, 59, 58), PackedInt32Array(52, 53, 60, 59), PackedInt32Array(53, 54, 61, 60), PackedInt32Array(54, 55, 62, 61)]
+bones = ["corpo/forma/gamba_d", PackedFloat32Array(0.99707055, 0.9953964, 0.9927676, 0.9886532, 0.98223865, 0.9722947, 0.95700026, 0.9841722, 0.9752917, 0.9616196, 0.94148856, 0.91433823, 0.87975526, 0.8382316, 0.9220459, 0.889377, 0.8495505, 0.80385274, 0.7545091, 0.70429796, 0.65603375, 0.76743, 0.7171677, 0.66815156, 0.6229304, 0.58345217, 0.5509984, 0.526285, 0.592999, 0.55864626, 0.53189373, 0.5131507, 0.5025674, 0.5, 0.5, 0.48915148, 0.4846517, 0.4846417, 0.4846417, 0.48464173, 0.48464173, 0.48464188, 0.3651532, 0.36515215, 0.36515197, 0.36515194, 0.365152, 0.36515224, 0.3651535, 0.17707619, 0.17707312, 0.17707245, 0.17707233, 0.17707251, 0.17707337, 0.17707735, 0.047930256, 0.04792513, 0.047924023, 0.047923826, 0.047924116, 0.047925502, 0.047932204), "corpo/forma/gamba_d/ginocchio_d", PackedFloat32Array(0.0029294544, 0.0046036346, 0.0072324052, 0.011346808, 0.01776137, 0.027705332, 0.04299973, 0.015827771, 0.024708249, 0.038380384, 0.05851142, 0.08566178, 0.12024474, 0.16176835, 0.07795409, 0.11062302, 0.15044953, 0.19614728, 0.24549094, 0.29570204, 0.34396625, 0.23256998, 0.28283235, 0.33184847, 0.37706962, 0.41654786, 0.44900158, 0.47371498, 0.407001, 0.44135377, 0.4681063, 0.48684928, 0.4974326, 0.5, 0.5, 0.5108485, 0.51534826, 0.51535827, 0.51535827, 0.51535827, 0.51535827, 0.51535815, 0.6348468, 0.6348478, 0.63484806, 0.63484806, 0.634848, 0.63484776, 0.6348465, 0.8229238, 0.8229269, 0.82292753, 0.82292765, 0.8229275, 0.82292664, 0.82292265, 0.95206976, 0.9520749, 0.95207596, 0.9520762, 0.9520759, 0.95207447, 0.9520678)]
+
+[node name="busto" type="Polygon2D" parent="." unique_id=829649307]
+texture = ExtResource("6_h5plm")
+skeleton = NodePath("../Scheletro")
+polygon = PackedVector2Array(-40.45, -131.25, -26.966667, -131.25, -13.483334, -131.25, 0, -131.25, 13.483334, -131.25, 26.966667, -131.25, 40.45, -131.25, -40.45, -120.1125, -26.966667, -120.1125, -13.483334, -120.1125, 0, -120.1125, 13.483334, -120.1125, 26.966667, -120.1125, 40.45, -120.1125, -40.45, -108.975, -26.966667, -108.975, -13.483334, -108.975, 0, -108.975, 13.483334, -108.975, 26.966667, -108.975, 40.45, -108.975, -40.45, -97.8375, -26.966667, -97.8375, -13.483334, -97.8375, 0, -97.8375, 13.483334, -97.8375, 26.966667, -97.8375, 40.45, -97.8375, -40.45, -86.7, -26.966667, -86.7, -13.483334, -86.7, 0, -86.7, 13.483334, -86.7, 26.966667, -86.7, 40.45, -86.7, -40.45, -75.5625, -26.966667, -75.5625, -13.483334, -75.5625, 0, -75.5625, 13.483334, -75.5625, 26.966667, -75.5625, 40.45, -75.5625, -40.45, -64.425, -26.966667, -64.425, -13.483334, -64.425, 0, -64.425, 13.483334, -64.425, 26.966667, -64.425, 40.45, -64.425, -40.45, -53.2875, -26.966667, -53.2875, -13.483334, -53.2875, 0, -53.2875, 13.483334, -53.2875, 26.966667, -53.2875, 40.45, -53.2875, -40.45, -42.15, -26.966667, -42.15, -13.483334, -42.15, 0, -42.15, 13.483334, -42.15, 26.966667, -42.15, 40.45, -42.15)
+uv = PackedVector2Array(0, 0, 15.833333, 0, 31.666666, 0, 47.5, 0, 63.333332, 0, 79.166664, 0, 95, 0, 0, 13.125, 15.833333, 13.125, 31.666666, 13.125, 47.5, 13.125, 63.333332, 13.125, 79.166664, 13.125, 95, 13.125, 0, 26.25, 15.833333, 26.25, 31.666666, 26.25, 47.5, 26.25, 63.333332, 26.25, 79.166664, 26.25, 95, 26.25, 0, 39.375, 15.833333, 39.375, 31.666666, 39.375, 47.5, 39.375, 63.333332, 39.375, 79.166664, 39.375, 95, 39.375, 0, 52.5, 15.833333, 52.5, 31.666666, 52.5, 47.5, 52.5, 63.333332, 52.5, 79.166664, 52.5, 95, 52.5, 0, 65.625, 15.833333, 65.625, 31.666666, 65.625, 47.5, 65.625, 63.333332, 65.625, 79.166664, 65.625, 95, 65.625, 0, 78.75, 15.833333, 78.75, 31.666666, 78.75, 47.5, 78.75, 63.333332, 78.75, 79.166664, 78.75, 95, 78.75, 0, 91.875, 15.833333, 91.875, 31.666666, 91.875, 47.5, 91.875, 63.333332, 91.875, 79.166664, 91.875, 95, 91.875, 0, 105, 15.833333, 105, 31.666666, 105, 47.5, 105, 63.333332, 105, 79.166664, 105, 95, 105)
+polygons = [PackedInt32Array(0, 1, 8, 7), PackedInt32Array(1, 2, 9, 8), PackedInt32Array(2, 3, 10, 9), PackedInt32Array(3, 4, 11, 10), PackedInt32Array(4, 5, 12, 11), PackedInt32Array(5, 6, 13, 12), PackedInt32Array(7, 8, 15, 14), PackedInt32Array(8, 9, 16, 15), PackedInt32Array(9, 10, 17, 16), PackedInt32Array(10, 11, 18, 17), PackedInt32Array(11, 12, 19, 18), PackedInt32Array(12, 13, 20, 19), PackedInt32Array(14, 15, 22, 21), PackedInt32Array(15, 16, 23, 22), PackedInt32Array(16, 17, 24, 23), PackedInt32Array(17, 18, 25, 24), PackedInt32Array(18, 19, 26, 25), PackedInt32Array(19, 20, 27, 26), PackedInt32Array(21, 22, 29, 28), PackedInt32Array(22, 23, 30, 29), PackedInt32Array(23, 24, 31, 30), PackedInt32Array(24, 25, 32, 31), PackedInt32Array(25, 26, 33, 32), PackedInt32Array(26, 27, 34, 33), PackedInt32Array(28, 29, 36, 35), PackedInt32Array(29, 30, 37, 36), PackedInt32Array(30, 31, 38, 37), PackedInt32Array(31, 32, 39, 38), PackedInt32Array(32, 33, 40, 39), PackedInt32Array(33, 34, 41, 40), PackedInt32Array(35, 36, 43, 42), PackedInt32Array(36, 37, 44, 43), PackedInt32Array(37, 38, 45, 44), PackedInt32Array(38, 39, 46, 45), PackedInt32Array(39, 40, 47, 46), PackedInt32Array(40, 41, 48, 47), PackedInt32Array(42, 43, 50, 49), PackedInt32Array(43, 44, 51, 50), PackedInt32Array(44, 45, 52, 51), PackedInt32Array(45, 46, 53, 52), PackedInt32Array(46, 47, 54, 53), PackedInt32Array(47, 48, 55, 54), PackedInt32Array(49, 50, 57, 56), PackedInt32Array(50, 51, 58, 57), PackedInt32Array(51, 52, 59, 58), PackedInt32Array(52, 53, 60, 59), PackedInt32Array(53, 54, 61, 60), PackedInt32Array(54, 55, 62, 61)]
+bones = ["corpo/forma/busto", PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)]
+
+[node name="busto_tinta" type="Polygon2D" parent="." unique_id=285595681]
+modulate = Color(0.85, 0.2, 0.2, 1)
+texture = ExtResource("7_gxdea")
+skeleton = NodePath("../Scheletro")
+polygon = PackedVector2Array(-40.45, -131.25, -26.966667, -131.25, -13.483334, -131.25, 0, -131.25, 13.483334, -131.25, 26.966667, -131.25, 40.45, -131.25, -40.45, -120.1125, -26.966667, -120.1125, -13.483334, -120.1125, 0, -120.1125, 13.483334, -120.1125, 26.966667, -120.1125, 40.45, -120.1125, -40.45, -108.975, -26.966667, -108.975, -13.483334, -108.975, 0, -108.975, 13.483334, -108.975, 26.966667, -108.975, 40.45, -108.975, -40.45, -97.8375, -26.966667, -97.8375, -13.483334, -97.8375, 0, -97.8375, 13.483334, -97.8375, 26.966667, -97.8375, 40.45, -97.8375, -40.45, -86.7, -26.966667, -86.7, -13.483334, -86.7, 0, -86.7, 13.483334, -86.7, 26.966667, -86.7, 40.45, -86.7, -40.45, -75.5625, -26.966667, -75.5625, -13.483334, -75.5625, 0, -75.5625, 13.483334, -75.5625, 26.966667, -75.5625, 40.45, -75.5625, -40.45, -64.425, -26.966667, -64.425, -13.483334, -64.425, 0, -64.425, 13.483334, -64.425, 26.966667, -64.425, 40.45, -64.425, -40.45, -53.2875, -26.966667, -53.2875, -13.483334, -53.2875, 0, -53.2875, 13.483334, -53.2875, 26.966667, -53.2875, 40.45, -53.2875, -40.45, -42.15, -26.966667, -42.15, -13.483334, -42.15, 0, -42.15, 13.483334, -42.15, 26.966667, -42.15, 40.45, -42.15)
+uv = PackedVector2Array(0, 0, 15.833333, 0, 31.666666, 0, 47.5, 0, 63.333332, 0, 79.166664, 0, 95, 0, 0, 13.125, 15.833333, 13.125, 31.666666, 13.125, 47.5, 13.125, 63.333332, 13.125, 79.166664, 13.125, 95, 13.125, 0, 26.25, 15.833333, 26.25, 31.666666, 26.25, 47.5, 26.25, 63.333332, 26.25, 79.166664, 26.25, 95, 26.25, 0, 39.375, 15.833333, 39.375, 31.666666, 39.375, 47.5, 39.375, 63.333332, 39.375, 79.166664, 39.375, 95, 39.375, 0, 52.5, 15.833333, 52.5, 31.666666, 52.5, 47.5, 52.5, 63.333332, 52.5, 79.166664, 52.5, 95, 52.5, 0, 65.625, 15.833333, 65.625, 31.666666, 65.625, 47.5, 65.625, 63.333332, 65.625, 79.166664, 65.625, 95, 65.625, 0, 78.75, 15.833333, 78.75, 31.666666, 78.75, 47.5, 78.75, 63.333332, 78.75, 79.166664, 78.75, 95, 78.75, 0, 91.875, 15.833333, 91.875, 31.666666, 91.875, 47.5, 91.875, 63.333332, 91.875, 79.166664, 91.875, 95, 91.875, 0, 105, 15.833333, 105, 31.666666, 105, 47.5, 105, 63.333332, 105, 79.166664, 105, 95, 105)
+polygons = [PackedInt32Array(0, 1, 8, 7), PackedInt32Array(1, 2, 9, 8), PackedInt32Array(2, 3, 10, 9), PackedInt32Array(3, 4, 11, 10), PackedInt32Array(4, 5, 12, 11), PackedInt32Array(5, 6, 13, 12), PackedInt32Array(7, 8, 15, 14), PackedInt32Array(8, 9, 16, 15), PackedInt32Array(9, 10, 17, 16), PackedInt32Array(10, 11, 18, 17), PackedInt32Array(11, 12, 19, 18), PackedInt32Array(12, 13, 20, 19), PackedInt32Array(14, 15, 22, 21), PackedInt32Array(15, 16, 23, 22), PackedInt32Array(16, 17, 24, 23), PackedInt32Array(17, 18, 25, 24), PackedInt32Array(18, 19, 26, 25), PackedInt32Array(19, 20, 27, 26), PackedInt32Array(21, 22, 29, 28), PackedInt32Array(22, 23, 30, 29), PackedInt32Array(23, 24, 31, 30), PackedInt32Array(24, 25, 32, 31), PackedInt32Array(25, 26, 33, 32), PackedInt32Array(26, 27, 34, 33), PackedInt32Array(28, 29, 36, 35), PackedInt32Array(29, 30, 37, 36), PackedInt32Array(30, 31, 38, 37), PackedInt32Array(31, 32, 39, 38), PackedInt32Array(32, 33, 40, 39), PackedInt32Array(33, 34, 41, 40), PackedInt32Array(35, 36, 43, 42), PackedInt32Array(36, 37, 44, 43), PackedInt32Array(37, 38, 45, 44), PackedInt32Array(38, 39, 46, 45), PackedInt32Array(39, 40, 47, 46), PackedInt32Array(40, 41, 48, 47), PackedInt32Array(42, 43, 50, 49), PackedInt32Array(43, 44, 51, 50), PackedInt32Array(44, 45, 52, 51), PackedInt32Array(45, 46, 53, 52), PackedInt32Array(46, 47, 54, 53), PackedInt32Array(47, 48, 55, 54), PackedInt32Array(49, 50, 57, 56), PackedInt32Array(50, 51, 58, 57), PackedInt32Array(51, 52, 59, 58), PackedInt32Array(52, 53, 60, 59), PackedInt32Array(53, 54, 61, 60), PackedInt32Array(54, 55, 62, 61)]
+bones = ["corpo/forma/busto", PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)]
+
+[node name="testa" type="Polygon2D" parent="." unique_id=2065443441]
+texture = ExtResource("8_qjgkm")
+skeleton = NodePath("../Scheletro")
+polygon = PackedVector2Array(-63.3, -231.05, -39.733334, -231.05, -16.166666, -231.05, 7.4, -231.05, 30.966667, -231.05, 54.533333, -231.05, 78.1, -231.05, -63.3, -215.4125, -39.733334, -215.4125, -16.166666, -215.4125, 7.4, -215.4125, 30.966667, -215.4125, 54.533333, -215.4125, 78.1, -215.4125, -63.3, -199.775, -39.733334, -199.775, -16.166666, -199.775, 7.4, -199.775, 30.966667, -199.775, 54.533333, -199.775, 78.1, -199.775, -63.3, -184.1375, -39.733334, -184.1375, -16.166666, -184.1375, 7.4, -184.1375, 30.966667, -184.1375, 54.533333, -184.1375, 78.1, -184.1375, -63.3, -168.5, -39.733334, -168.5, -16.166666, -168.5, 7.4, -168.5, 30.966667, -168.5, 54.533333, -168.5, 78.1, -168.5, -63.3, -152.8625, -39.733334, -152.8625, -16.166666, -152.8625, 7.4, -152.8625, 30.966667, -152.8625, 54.533333, -152.8625, 78.1, -152.8625, -63.3, -137.225, -39.733334, -137.225, -16.166666, -137.225, 7.4, -137.225, 30.966667, -137.225, 54.533333, -137.225, 78.1, -137.225, -63.3, -121.5875, -39.733334, -121.5875, -16.166666, -121.5875, 7.4, -121.5875, 30.966667, -121.5875, 54.533333, -121.5875, 78.1, -121.5875, -63.3, -105.95, -39.733334, -105.95, -16.166666, -105.95, 7.4, -105.95, 30.966667, -105.95, 54.533333, -105.95, 78.1, -105.95)
+uv = PackedVector2Array(0, 0, 27.833334, 0, 55.666668, 0, 83.5, 0, 111.333336, 0, 139.16667, 0, 167, 0, 0, 18.5, 27.833334, 18.5, 55.666668, 18.5, 83.5, 18.5, 111.333336, 18.5, 139.16667, 18.5, 167, 18.5, 0, 37, 27.833334, 37, 55.666668, 37, 83.5, 37, 111.333336, 37, 139.16667, 37, 167, 37, 0, 55.5, 27.833334, 55.5, 55.666668, 55.5, 83.5, 55.5, 111.333336, 55.5, 139.16667, 55.5, 167, 55.5, 0, 74, 27.833334, 74, 55.666668, 74, 83.5, 74, 111.333336, 74, 139.16667, 74, 167, 74, 0, 92.5, 27.833334, 92.5, 55.666668, 92.5, 83.5, 92.5, 111.333336, 92.5, 139.16667, 92.5, 167, 92.5, 0, 111, 27.833334, 111, 55.666668, 111, 83.5, 111, 111.333336, 111, 139.16667, 111, 167, 111, 0, 129.5, 27.833334, 129.5, 55.666668, 129.5, 83.5, 129.5, 111.333336, 129.5, 139.16667, 129.5, 167, 129.5, 0, 148, 27.833334, 148, 55.666668, 148, 83.5, 148, 111.333336, 148, 139.16667, 148, 167, 148)
+polygons = [PackedInt32Array(0, 1, 8, 7), PackedInt32Array(1, 2, 9, 8), PackedInt32Array(2, 3, 10, 9), PackedInt32Array(3, 4, 11, 10), PackedInt32Array(4, 5, 12, 11), PackedInt32Array(5, 6, 13, 12), PackedInt32Array(7, 8, 15, 14), PackedInt32Array(8, 9, 16, 15), PackedInt32Array(9, 10, 17, 16), PackedInt32Array(10, 11, 18, 17), PackedInt32Array(11, 12, 19, 18), PackedInt32Array(12, 13, 20, 19), PackedInt32Array(14, 15, 22, 21), PackedInt32Array(15, 16, 23, 22), PackedInt32Array(16, 17, 24, 23), PackedInt32Array(17, 18, 25, 24), PackedInt32Array(18, 19, 26, 25), PackedInt32Array(19, 20, 27, 26), PackedInt32Array(21, 22, 29, 28), PackedInt32Array(22, 23, 30, 29), PackedInt32Array(23, 24, 31, 30), PackedInt32Array(24, 25, 32, 31), PackedInt32Array(25, 26, 33, 32), PackedInt32Array(26, 27, 34, 33), PackedInt32Array(28, 29, 36, 35), PackedInt32Array(29, 30, 37, 36), PackedInt32Array(30, 31, 38, 37), PackedInt32Array(31, 32, 39, 38), PackedInt32Array(32, 33, 40, 39), PackedInt32Array(33, 34, 41, 40), PackedInt32Array(35, 36, 43, 42), PackedInt32Array(36, 37, 44, 43), PackedInt32Array(37, 38, 45, 44), PackedInt32Array(38, 39, 46, 45), PackedInt32Array(39, 40, 47, 46), PackedInt32Array(40, 41, 48, 47), PackedInt32Array(42, 43, 50, 49), PackedInt32Array(43, 44, 51, 50), PackedInt32Array(44, 45, 52, 51), PackedInt32Array(45, 46, 53, 52), PackedInt32Array(46, 47, 54, 53), PackedInt32Array(47, 48, 55, 54), PackedInt32Array(49, 50, 57, 56), PackedInt32Array(50, 51, 58, 57), PackedInt32Array(51, 52, 59, 58), PackedInt32Array(52, 53, 60, 59), PackedInt32Array(53, 54, 61, 60), PackedInt32Array(54, 55, 62, 61)]
+bones = ["corpo/forma/collo", PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0.14480999, 0.14480999, 0.14480999, 0.14480999, 0.14480999, 0.14480999, 0.14480999, 0.69148004, 0.69148004, 0.69148004, 0.69148004, 0.69148004, 0.69148004, 0.69148004, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1), "corpo/forma/collo/cranio", PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 0.85519004, 0.85519004, 0.85519004, 0.85519004, 0.85519004, 0.85519004, 0.85519004, 0.30851996, 0.30851996, 0.30851996, 0.30851996, 0.30851996, 0.30851996, 0.30851996, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)]
+
+[node name="occhi" type="Node2D" parent="." unique_id=1279360664]
+position = Vector2(21.999998, -120.19999)
+scale = Vector2(0.99999994, 0.99999994)
+
+[node name="occhio_0" type="Sprite2D" parent="occhi" unique_id=1711797717]
+material = SubResource("ShaderMaterial_iiae8")
+position = Vector2(-9.943113, -34.752697)
+scale = Vector2(0.84670657, 0.84670657)
+texture = ExtResource("11_tre46")
+
+[node name="occhio_1" type="Sprite2D" parent="occhi" unique_id=2009611146]
+material = SubResource("ShaderMaterial_5e6tu")
+position = Vector2(34.932335, -33.48264)
+scale = Vector2(0.84670657, 0.84670657)
+texture = ExtResource("13_0u3oq")
+
+[node name="fiamma" type="Polygon2D" parent="." unique_id=447867627]
+texture = ExtResource("14_mp0tv")
+skeleton = NodePath("../Scheletro")
+polygon = PackedVector2Array(2.85, -256.2, 12.425, -256.2, 22, -256.2, 31.575, -256.2, 41.15, -256.2, 2.85, -249.45, 12.425, -249.45, 22, -249.45, 31.575, -249.45, 41.15, -249.45, 2.85, -242.7, 12.425, -242.7, 22, -242.7, 31.575, -242.7, 41.15, -242.7, 2.85, -235.95, 12.425, -235.95, 22, -235.95, 31.575, -235.95, 41.15, -235.95, 2.85, -229.2, 12.425, -229.2, 22, -229.2, 31.575, -229.2, 41.15, -229.2, 2.85, -222.45, 12.425, -222.45, 22, -222.45, 31.575, -222.45, 41.15, -222.45, 2.85, -215.7, 12.425, -215.7, 22, -215.7, 31.575, -215.7, 41.15, -215.7, 2.85, -208.95, 12.425, -208.95, 22, -208.95, 31.575, -208.95, 41.15, -208.95, 2.85, -202.2, 12.425, -202.2, 22, -202.2, 31.575, -202.2, 41.15, -202.2)
+uv = PackedVector2Array(0, 0, 19.75, 0, 39.5, 0, 59.25, 0, 79, 0, 0, 13.875, 19.75, 13.875, 39.5, 13.875, 59.25, 13.875, 79, 13.875, 0, 27.75, 19.75, 27.75, 39.5, 27.75, 59.25, 27.75, 79, 27.75, 0, 41.625, 19.75, 41.625, 39.5, 41.625, 59.25, 41.625, 79, 41.625, 0, 55.5, 19.75, 55.5, 39.5, 55.5, 59.25, 55.5, 79, 55.5, 0, 69.375, 19.75, 69.375, 39.5, 69.375, 59.25, 69.375, 79, 69.375, 0, 83.25, 19.75, 83.25, 39.5, 83.25, 59.25, 83.25, 79, 83.25, 0, 97.125, 19.75, 97.125, 39.5, 97.125, 59.25, 97.125, 79, 97.125, 0, 111, 19.75, 111, 39.5, 111, 59.25, 111, 79, 111)
+polygons = [PackedInt32Array(0, 1, 6, 5), PackedInt32Array(1, 2, 7, 6), PackedInt32Array(2, 3, 8, 7), PackedInt32Array(3, 4, 9, 8), PackedInt32Array(5, 6, 11, 10), PackedInt32Array(6, 7, 12, 11), PackedInt32Array(7, 8, 13, 12), PackedInt32Array(8, 9, 14, 13), PackedInt32Array(10, 11, 16, 15), PackedInt32Array(11, 12, 17, 16), PackedInt32Array(12, 13, 18, 17), PackedInt32Array(13, 14, 19, 18), PackedInt32Array(15, 16, 21, 20), PackedInt32Array(16, 17, 22, 21), PackedInt32Array(17, 18, 23, 22), PackedInt32Array(18, 19, 24, 23), PackedInt32Array(20, 21, 26, 25), PackedInt32Array(21, 22, 27, 26), PackedInt32Array(22, 23, 28, 27), PackedInt32Array(23, 24, 29, 28), PackedInt32Array(25, 26, 31, 30), PackedInt32Array(26, 27, 32, 31), PackedInt32Array(27, 28, 33, 32), PackedInt32Array(28, 29, 34, 33), PackedInt32Array(30, 31, 36, 35), PackedInt32Array(31, 32, 37, 36), PackedInt32Array(32, 33, 38, 37), PackedInt32Array(33, 34, 39, 38), PackedInt32Array(35, 36, 41, 40), PackedInt32Array(36, 37, 42, 41), PackedInt32Array(37, 38, 43, 42), PackedInt32Array(38, 39, 44, 43)]
+bones = ["corpo/forma/collo/fiamma_0", PackedFloat32Array(0.00025077316, 8.430663e-06, 2.7312303e-06, 8.430666e-06, 0.00025077342, 9.861693e-05, 5.9630397e-06, 3.7850039e-06, 5.963041e-06, 9.861701e-05, 0.00033317477, 0.00026209193, 0.00026042105, 0.00026209198, 0.00033317468, 0.0070797727, 0.0070325583, 0.007031446, 0.0070325537, 0.0070797703, 0.08192592, 0.081893265, 0.081892505, 0.08189329, 0.08192591, 0.35211796, 0.35212055, 0.35212058, 0.35212055, 0.35211796, 0.49815854, 0.49818057, 0.4981811, 0.49818057, 0.49815854, 0.6978369, 0.6979052, 0.69790685, 0.69790524, 0.69783694, 0.941291, 0.9414445, 0.94144815, 0.9414445, 0.941291), "corpo/forma/collo/fiamma_0/fiamma_1", PackedFloat32Array(0.002462252, 0.002221519, 0.0022158576, 0.0022215196, 0.0024622546, 0.026399089, 0.026313739, 0.026311722, 0.026313722, 0.026399082, 0.20403545, 0.20400779, 0.2040071, 0.20400777, 0.20403542, 0.45347697, 0.45349428, 0.45349467, 0.45349422, 0.45347697, 0.4845104, 0.48453, 0.4845305, 0.48453006, 0.4845104, 0.49482632, 0.49484766, 0.4948482, 0.49484766, 0.49482632, 0.48451254, 0.4845327, 0.4845332, 0.4845327, 0.48451254, 0.30121666, 0.3012106, 0.30121043, 0.30121058, 0.30121666, 0.058607887, 0.05853848, 0.058536854, 0.058538493, 0.058607873), "corpo/forma/collo/fiamma_0/fiamma_1/fiamma_2", PackedFloat32Array(0.997287, 0.9977701, 0.9977814, 0.9977701, 0.997287, 0.9735023, 0.9736803, 0.9736845, 0.9736803, 0.9735023, 0.7956314, 0.7957301, 0.7957325, 0.7957301, 0.7956314, 0.53944325, 0.5394732, 0.5394739, 0.53947324, 0.53944325, 0.43356368, 0.43357673, 0.433577, 0.43357667, 0.43356368, 0.15305573, 0.15303181, 0.15303124, 0.1530318, 0.15305571, 0.017328942, 0.01728671, 0.017285714, 0.017286714, 0.017328938, 0.00094642193, 0.0008841928, 0.0008827303, 0.00088419305, 0.0009464228, 0.00010114795, 1.6989967e-05, 1.5011694e-05, 1.698997e-05, 0.000101148034)]
+
+[node name="gamba" type="Polygon2D" parent="." unique_id=427551403]
+texture = ExtResource("15_438b7")
+skeleton = NodePath("../Scheletro")
+polygon = PackedVector2Array(-12.75, -86.3, -2.9333334, -86.3, 6.883333, -86.3, 16.7, -86.3, 26.516666, -86.3, 36.333332, -86.3, 46.15, -86.3, -12.75, -76.05, -2.9333334, -76.05, 6.883333, -76.05, 16.7, -76.05, 26.516666, -76.05, 36.333332, -76.05, 46.15, -76.05, -12.75, -65.8, -2.9333334, -65.8, 6.883333, -65.8, 16.7, -65.8, 26.516666, -65.8, 36.333332, -65.8, 46.15, -65.8, -12.75, -55.55, -2.9333334, -55.55, 6.883333, -55.55, 16.7, -55.55, 26.516666, -55.55, 36.333332, -55.55, 46.15, -55.55, -12.75, -45.3, -2.9333334, -45.3, 6.883333, -45.3, 16.7, -45.3, 26.516666, -45.3, 36.333332, -45.3, 46.15, -45.3, -12.75, -35.05, -2.9333334, -35.05, 6.883333, -35.05, 16.7, -35.05, 26.516666, -35.05, 36.333332, -35.05, 46.15, -35.05, -12.75, -24.8, -2.9333334, -24.8, 6.883333, -24.8, 16.7, -24.8, 26.516666, -24.8, 36.333332, -24.8, 46.15, -24.8, -12.75, -14.55, -2.9333334, -14.55, 6.883333, -14.55, 16.7, -14.55, 26.516666, -14.55, 36.333332, -14.55, 46.15, -14.55, -12.75, -4.3, -2.9333334, -4.3, 6.883333, -4.3, 16.7, -4.3, 26.516666, -4.3, 36.333332, -4.3, 46.15, -4.3)
+uv = PackedVector2Array(0, 0, 11.5, 0, 23, 0, 34.5, 0, 46, 0, 57.5, 0, 69, 0, 0, 12.125, 11.5, 12.125, 23, 12.125, 34.5, 12.125, 46, 12.125, 57.5, 12.125, 69, 12.125, 0, 24.25, 11.5, 24.25, 23, 24.25, 34.5, 24.25, 46, 24.25, 57.5, 24.25, 69, 24.25, 0, 36.375, 11.5, 36.375, 23, 36.375, 34.5, 36.375, 46, 36.375, 57.5, 36.375, 69, 36.375, 0, 48.5, 11.5, 48.5, 23, 48.5, 34.5, 48.5, 46, 48.5, 57.5, 48.5, 69, 48.5, 0, 60.625, 11.5, 60.625, 23, 60.625, 34.5, 60.625, 46, 60.625, 57.5, 60.625, 69, 60.625, 0, 72.75, 11.5, 72.75, 23, 72.75, 34.5, 72.75, 46, 72.75, 57.5, 72.75, 69, 72.75, 0, 84.875, 11.5, 84.875, 23, 84.875, 34.5, 84.875, 46, 84.875, 57.5, 84.875, 69, 84.875, 0, 97, 11.5, 97, 23, 97, 34.5, 97, 46, 97, 57.5, 97, 69, 97)
+polygons = [PackedInt32Array(0, 1, 8, 7), PackedInt32Array(1, 2, 9, 8), PackedInt32Array(2, 3, 10, 9), PackedInt32Array(3, 4, 11, 10), PackedInt32Array(4, 5, 12, 11), PackedInt32Array(5, 6, 13, 12), PackedInt32Array(7, 8, 15, 14), PackedInt32Array(8, 9, 16, 15), PackedInt32Array(9, 10, 17, 16), PackedInt32Array(10, 11, 18, 17), PackedInt32Array(11, 12, 19, 18), PackedInt32Array(12, 13, 20, 19), PackedInt32Array(14, 15, 22, 21), PackedInt32Array(15, 16, 23, 22), PackedInt32Array(16, 17, 24, 23), PackedInt32Array(17, 18, 25, 24), PackedInt32Array(18, 19, 26, 25), PackedInt32Array(19, 20, 27, 26), PackedInt32Array(21, 22, 29, 28), PackedInt32Array(22, 23, 30, 29), PackedInt32Array(23, 24, 31, 30), PackedInt32Array(24, 25, 32, 31), PackedInt32Array(25, 26, 33, 32), PackedInt32Array(26, 27, 34, 33), PackedInt32Array(28, 29, 36, 35), PackedInt32Array(29, 30, 37, 36), PackedInt32Array(30, 31, 38, 37), PackedInt32Array(31, 32, 39, 38), PackedInt32Array(32, 33, 40, 39), PackedInt32Array(33, 34, 41, 40), PackedInt32Array(35, 36, 43, 42), PackedInt32Array(36, 37, 44, 43), PackedInt32Array(37, 38, 45, 44), PackedInt32Array(38, 39, 46, 45), PackedInt32Array(39, 40, 47, 46), PackedInt32Array(40, 41, 48, 47), PackedInt32Array(42, 43, 50, 49), PackedInt32Array(43, 44, 51, 50), PackedInt32Array(44, 45, 52, 51), PackedInt32Array(45, 46, 53, 52), PackedInt32Array(46, 47, 54, 53), PackedInt32Array(47, 48, 55, 54), PackedInt32Array(49, 50, 57, 56), PackedInt32Array(50, 51, 58, 57), PackedInt32Array(51, 52, 59, 58), PackedInt32Array(52, 53, 60, 59), PackedInt32Array(53, 54, 61, 60), PackedInt32Array(54, 55, 62, 61)]
+bones = ["corpo/forma/gamba_a", PackedFloat32Array(0.98438686, 0.98784554, 0.99053633, 0.9926343, 0.99426925, 0.99554205, 0.99653006, 0.918189, 0.933876, 0.9472471, 0.95843405, 0.96741253, 0.9745026, 0.9800797, 0.751005, 0.77917755, 0.806618, 0.83284134, 0.8574209, 0.88001573, 0.9003862, 0.57408345, 0.5945032, 0.6170654, 0.6415336, 0.6676023, 0.69489634, 0.7229766, 0.5004421, 0.50326174, 0.5086851, 0.5167087, 0.5273211, 0.54049736, 0.55619013, 0.4848436, 0.48484352, 0.48484352, 0.48484352, 0.48484352, 0.48484352, 0.4848436, 0.36081585, 0.36081475, 0.3608145, 0.36081445, 0.3608145, 0.36081475, 0.3608158, 0.16755582, 0.16755237, 0.1675516, 0.16755143, 0.16755158, 0.1675523, 0.16755547, 0.04227678, 0.042271093, 0.04226984, 0.0422696, 0.04226981, 0.042270955, 0.04227611), "corpo/forma/gamba_a/ginocchio_a", PackedFloat32Array(0.015613126, 0.01215446, 0.009463639, 0.00736568, 0.0057307356, 0.0044579697, 0.003469944, 0.08181103, 0.06612403, 0.05275293, 0.04156596, 0.03258748, 0.0254974, 0.019920276, 0.24899502, 0.22082244, 0.19338202, 0.1671587, 0.14257906, 0.11998428, 0.09961377, 0.42591655, 0.4054968, 0.38293454, 0.3584664, 0.3323977, 0.30510363, 0.27702335, 0.49955794, 0.49673826, 0.49131486, 0.48329133, 0.47267893, 0.45950267, 0.44380987, 0.5151564, 0.5151565, 0.51515645, 0.5151565, 0.5151565, 0.51515645, 0.5151564, 0.6391842, 0.63918525, 0.6391855, 0.63918555, 0.6391855, 0.63918525, 0.6391842, 0.8324442, 0.83244765, 0.83244836, 0.8324486, 0.8324484, 0.8324477, 0.83244455, 0.9577232, 0.9577289, 0.9577302, 0.9577304, 0.9577302, 0.95772904, 0.9577239)]
+
+[node name="braccio" type="Polygon2D" parent="." unique_id=970610609]
+texture = ExtResource("16_lbq13")
+skeleton = NodePath("../Scheletro")
+polygon = PackedVector2Array(17.5, -119.8, 22.933332, -119.8, 28.366667, -119.8, 33.8, -119.8, 39.233334, -119.8, 44.666668, -119.8, 50.1, -119.8, 17.5, -111.375, 22.933332, -111.375, 28.366667, -111.375, 33.8, -111.375, 39.233334, -111.375, 44.666668, -111.375, 50.1, -111.375, 17.5, -102.95, 22.933332, -102.95, 28.366667, -102.95, 33.8, -102.95, 39.233334, -102.95, 44.666668, -102.95, 50.1, -102.95, 17.5, -94.525, 22.933332, -94.525, 28.366667, -94.525, 33.8, -94.525, 39.233334, -94.525, 44.666668, -94.525, 50.1, -94.525, 17.5, -86.1, 22.933332, -86.1, 28.366667, -86.1, 33.8, -86.1, 39.233334, -86.1, 44.666668, -86.1, 50.1, -86.1, 17.5, -77.675, 22.933332, -77.675, 28.366667, -77.675, 33.8, -77.675, 39.233334, -77.675, 44.666668, -77.675, 50.1, -77.675, 17.5, -69.25, 22.933332, -69.25, 28.366667, -69.25, 33.8, -69.25, 39.233334, -69.25, 44.666668, -69.25, 50.1, -69.25, 17.5, -60.825, 22.933332, -60.825, 28.366667, -60.825, 33.8, -60.825, 39.233334, -60.825, 44.666668, -60.825, 50.1, -60.825, 17.5, -52.4, 22.933332, -52.4, 28.366667, -52.4, 33.8, -52.4, 39.233334, -52.4, 44.666668, -52.4, 50.1, -52.4)
+uv = PackedVector2Array(0, 0, 6.3333335, 0, 12.666667, 0, 19, 0, 25.333334, 0, 31.666666, 0, 38, 0, 0, 10, 6.3333335, 10, 12.666667, 10, 19, 10, 25.333334, 10, 31.666666, 10, 38, 10, 0, 20, 6.3333335, 20, 12.666667, 20, 19, 20, 25.333334, 20, 31.666666, 20, 38, 20, 0, 30, 6.3333335, 30, 12.666667, 30, 19, 30, 25.333334, 30, 31.666666, 30, 38, 30, 0, 40, 6.3333335, 40, 12.666667, 40, 19, 40, 25.333334, 40, 31.666666, 40, 38, 40, 0, 50, 6.3333335, 50, 12.666667, 50, 19, 50, 25.333334, 50, 31.666666, 50, 38, 50, 0, 60, 6.3333335, 60, 12.666667, 60, 19, 60, 25.333334, 60, 31.666666, 60, 38, 60, 0, 70, 6.3333335, 70, 12.666667, 70, 19, 70, 25.333334, 70, 31.666666, 70, 38, 70, 0, 80, 6.3333335, 80, 12.666667, 80, 19, 80, 25.333334, 80, 31.666666, 80, 38, 80)
+polygons = [PackedInt32Array(0, 1, 8, 7), PackedInt32Array(1, 2, 9, 8), PackedInt32Array(2, 3, 10, 9), PackedInt32Array(3, 4, 11, 10), PackedInt32Array(4, 5, 12, 11), PackedInt32Array(5, 6, 13, 12), PackedInt32Array(7, 8, 15, 14), PackedInt32Array(8, 9, 16, 15), PackedInt32Array(9, 10, 17, 16), PackedInt32Array(10, 11, 18, 17), PackedInt32Array(11, 12, 19, 18), PackedInt32Array(12, 13, 20, 19), PackedInt32Array(14, 15, 22, 21), PackedInt32Array(15, 16, 23, 22), PackedInt32Array(16, 17, 24, 23), PackedInt32Array(17, 18, 25, 24), PackedInt32Array(18, 19, 26, 25), PackedInt32Array(19, 20, 27, 26), PackedInt32Array(21, 22, 29, 28), PackedInt32Array(22, 23, 30, 29), PackedInt32Array(23, 24, 31, 30), PackedInt32Array(24, 25, 32, 31), PackedInt32Array(25, 26, 33, 32), PackedInt32Array(26, 27, 34, 33), PackedInt32Array(28, 29, 36, 35), PackedInt32Array(29, 30, 37, 36), PackedInt32Array(30, 31, 38, 37), PackedInt32Array(31, 32, 39, 38), PackedInt32Array(32, 33, 40, 39), PackedInt32Array(33, 34, 41, 40), PackedInt32Array(35, 36, 43, 42), PackedInt32Array(36, 37, 44, 43), PackedInt32Array(37, 38, 45, 44), PackedInt32Array(38, 39, 46, 45), PackedInt32Array(39, 40, 47, 46), PackedInt32Array(40, 41, 48, 47), PackedInt32Array(42, 43, 50, 49), PackedInt32Array(43, 44, 51, 50), PackedInt32Array(44, 45, 52, 51), PackedInt32Array(45, 46, 53, 52), PackedInt32Array(46, 47, 54, 53), PackedInt32Array(47, 48, 55, 54), PackedInt32Array(49, 50, 57, 56), PackedInt32Array(50, 51, 58, 57), PackedInt32Array(51, 52, 59, 58), PackedInt32Array(52, 53, 60, 59), PackedInt32Array(53, 54, 61, 60), PackedInt32Array(54, 55, 62, 61)]
+bones = ["corpo/forma/braccio_a", PackedFloat32Array(0.9532426, 0.9674257, 0.97757894, 0.98461723, 0.98946965, 0.9928023, 0.995085, 0.81522363, 0.852167, 0.8850556, 0.9131589, 0.9362303, 0.9544559, 0.96831924, 0.620186, 0.65672094, 0.6961902, 0.73727524, 0.778443, 0.8180967, 0.8547708, 0.5082939, 0.52062875, 0.5384425, 0.5616139, 0.5898834, 0.62278366, 0.65957594, 0.4999065, 0.49990648, 0.49990648, 0.49990648, 0.5017043, 0.5089294, 0.52167493, 0.42155147, 0.42155135, 0.4215513, 0.42155126, 0.4215513, 0.42155135, 0.4215515, 0.22749934, 0.22749878, 0.22749856, 0.2274985, 0.22749856, 0.22749877, 0.22749928, 0.06248705, 0.0624859, 0.062485464, 0.062485352, 0.06248544, 0.062485885, 0.06248698, 0.012263414, 0.01226135, 0.012260605, 0.012260401, 0.012260585, 0.012261302, 0.012263292), "corpo/forma/braccio_a/gomito_a", PackedFloat32Array(0.046757415, 0.032574266, 0.022421038, 0.0153827565, 0.010530366, 0.007197706, 0.0049149734, 0.18477634, 0.14783299, 0.11494438, 0.08684109, 0.063769706, 0.04554411, 0.031680774, 0.37981406, 0.34327903, 0.3038098, 0.26272473, 0.221557, 0.18190333, 0.14522919, 0.49170607, 0.47937122, 0.46155748, 0.4383861, 0.4101166, 0.37721637, 0.34042406, 0.50009346, 0.5000935, 0.5000935, 0.5000935, 0.4982957, 0.49107063, 0.4783251, 0.57844853, 0.57844865, 0.5784487, 0.5784487, 0.5784487, 0.57844865, 0.57844853, 0.77250063, 0.77250123, 0.77250147, 0.7725015, 0.77250147, 0.77250123, 0.7725007, 0.93751293, 0.9375141, 0.93751454, 0.93751466, 0.93751454, 0.9375141, 0.937513, 0.9877366, 0.98773867, 0.9877394, 0.9877396, 0.98773944, 0.98773867, 0.9877367)]

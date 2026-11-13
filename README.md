@@ -45,3 +45,26 @@ python3 tools/prepara_pezzi.py ../megablast              # se cambiano i disegni
 godot --path . -- --foto foto.png --zoom 6 --tieni RJ    # una foto (R L J: tasti tenuti)
 godot --path . -- --misura 8 --secondi 60                # misura con 8 diavoletti
 ```
+
+## Ritoccare l'Apprendista nell'editor di Godot
+
+L'Apprendista è la scena `game/apprendista.tscn`: ossa, maglie, pesi, occhi, fiamma e
+mantello. Il gioco la carica così com'è, quindi quello che cambi lì lo vedi premendo F5.
+
+1. Nel pannello FileSystem fai doppio clic su `game/apprendista.tscn`. Nella vista 2D
+   ingrandisci sul diavoletto (è piccolo: 39 pixel).
+2. **Muovere le ossa.** Nella scena apri `Scheletro` e seleziona un osso (per esempio
+   `braccio_a`): ruotalo con il tasto E o trascinalo. Per tornare alla posa di riposo:
+   menu `Skeleton2D` > `Reset to Rest Pose`; per fissare quella nuova: `Make Rest Pose`.
+3. **Dipingere i pesi.** Seleziona un pezzo (per esempio `braccio`), nella barra in alto
+   premi `UV`, poi la scheda `Bones`: scegli un osso a sinistra e dipingi con il
+   pennello quanto quell'osso tira i punti (bianco = tutto, nero = niente). È qui che si
+   decide come si piegano gomito, ginocchio, pancia e coda.
+4. **Cambiare la maglia.** Nella stessa finestra UV, scheda `Points` e `Polygons`: sposti
+   i punti della griglia o ne aggiungi dove serve più piega.
+5. **Mantello.** Seleziona la radice `Apprendista`: nel gruppo Mantello ci sono peso, aria,
+   rigidità, lunghezza, larghezza e attacco. Valgono anche mentre il gioco gira (scheda
+   Remoto).
+
+Attenzione: `godot --headless --path . -s tools/salva_scena.gd` rifà la scena dai disegni
+e cancella i ritocchi fatti a mano. Si usa solo quando cambiano i pezzi.

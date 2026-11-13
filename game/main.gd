@@ -12,7 +12,6 @@ extends Node2D
 ## the console and in user://misure.txt. --foto FILE: a screenshot after 2 s.
 
 const WorldScript := preload("res://sim/world.gd")
-const DevilScript := preload("res://game/devil.gd")
 const NEAR := 2.2                # the nearest zoom (battle/camera.lua)
 const MAP_PX := 1.5              # cortile_2.png: 1.5 image pixels per world unit
 
@@ -162,8 +161,7 @@ func add_robot(spawn: int) -> Array:
 	if spawn >= World.SPAWNS.size():
 		rb.x += 60 * (spawn / World.SPAWNS.size())
 		rb.y = world.terrain.ground_below(rb.x, rb.y + 200)
-	var d: Devil = DevilScript.new()
-	d.extras = extras
+	var d: Devil = Devil.make(extras)
 	d.gravity = world.gravity
 	add_child(d)
 	var entry := [rb, d, Vector2(rb.x, rb.y), {line = 0, left = 0, offset = spawn * 37}]
@@ -261,8 +259,7 @@ func toggle_extras() -> void:
 	extras = not extras
 	for e in robots:
 		var old: Devil = e[1]
-		var d: Devil = DevilScript.new()
-		d.extras = extras
+		var d: Devil = Devil.make(extras)
 		d.gravity = world.gravity
 		add_child(d)
 		e[1] = d

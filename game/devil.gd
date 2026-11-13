@@ -17,6 +17,9 @@ extends Node2D
 const DISEGNO_H := 39.2          # world px from the feet to the top of the head
 const UNITS := 200.0             # drawing units, same height
 const ART := "res://art/apprendista/"
+## the APPRENDISTA as a scene of the editor (tools/salva_scena.gd): bones,
+## meshes, weights and the extras, all editable in Godot
+const SCENE := "res://game/apprendista.tscn"
 
 # springs (battle/scoria.lua): position, velocity, stiffness, damping
 enum { SQ, LEAN, SHOVE, KICK, HEAD, TAIL }
@@ -95,7 +98,67 @@ func _ready() -> void:
 	Pose.load_clips("res://data/clip.json")
 	rig = JSON.parse_string(FileAccess.get_file_as_string(ART + "rig.json"))
 	scale = Vector2(k, k)
-	build()
+	if has_node("Scheletro"):
+		bind()
+	else:
+		build()
+	if not extras:
+		strip_extras()
+	cape_setup()
+
+
+## a devil: from the editor's scene when there is one, otherwise built here
+static func make(with_extras: bool) -> Devil:
+	var d: Devil
+	if ResourceLoader.exists(SCENE):
+		d = (load(SCENE) as PackedScene).instantiate()
+	else:
+		d = (load("res://game/devil.gd") as GDScript).new()
+	d.extras = with_extras
+	return d
+
+
+## the scene from the editor: find the bones and the pieces by name
+func bind() -> void:
+	skel = $Scheletro
+	var todo: Array[Node] = [skel]
+	while not todo.is_empty():
+		var n: Node = todo.pop_back()
+		for c in n.get_children():
+			if c is Bone2D:
+				b[String(c.name)] = c
+				rest_pos[String(c.name)] = c.rest.origin
+				todo.append(c)
+	var i := 0
+	while b.has("coda_%d" % i):
+		coda_a.append(-b["coda_%d" % i].rest.get_rotation())
+		i += 1
+	head_poly = $testa
+	for fc in FACES:
+		face_tex[fc] = tex(fc)
+	eyes_node = get_node_or_null("occhi")
+	if eyes_node:
+		for e in eyes_node.get_children():
+			if e is Sprite2D:
+				eyes.append(e)
+	glow = b.fiamma_1.get_node_or_null("bagliore")
+	embers = b.fiamma_2.get_node_or_null("braci")
+	cape = get_node_or_null("mantello")
+	for _k in range(4):
+		flame_chain.append(Vector2.ZERO)
+		flame_prev.append(Vector2.ZERO)
+
+
+## the A/B: the devil as MegaBlast draws it today, without the spike's extras
+func strip_extras() -> void:
+	for n in [cape, glow, embers]:
+		if n:
+			n.free()
+	cape = null
+	glow = null
+	embers = null
+	if eyes_node:
+		eyes_node.visible = false
 
 
 ## units (y up) -> godot local (y down)
@@ -163,7 +226,7 @@ func build() -> void:
 	var tail_poly := mesh_rect("coda", tl.left + tl.w / 2, tl.top - tl.h / 2, tl.w, tl.h, 8, 10,
 		chain_weights(["coda_0", "coda_1", "coda_2", "coda_3", "coda_4", "coda_punta"], 7.0))
 	tail_poly.name = "coda"
-	if extras and rig.cape:
+	if rig.cape:
 		make_cape()
 	piece("braccio_dietro", ["braccio_d", "gomito_d", "mano_d"])
 	piece("gamba_dietro", ["gamba_d", "ginocchio_d", "piede_d"])
@@ -276,15 +339,16 @@ func make_eyes() -> void:
 	eyes_node.name = "occhi"
 	add_child(eyes_node)
 	var follow := RemoteTransform2D.new()
+	follow.name = "segue_testa"
 	b.collo.add_child(follow)
 	follow.remote_path = follow.get_path_to(eyes_node)
 	follow.update_scale = true
-	eyes_node.visible = extras
 	var head: Dictionary = rig.pieces.testa
 	var neck := Vector2(rig.pivots.testa[0], rig.pivots.testa[1])
 	var shader := load("res://game/eye.gdshader")
 	for e in rig.eyes:
 		var s := Sprite2D.new()
+		s.name = "occhio_%d" % eyes.size()
 		s.texture = tex(e.img)
 		s.position = U(head.cx + e.cx - neck.x, head.cy + e.cy - neck.y)
 		s.scale = Vector2(e.w / s.texture.get_width(), e.h / s.texture.get_height())
@@ -301,59 +365,59 @@ func make_eyes() -> void:
 
 func make_flame() -> void:
 	var p: Dictionary = rig.pieces.fiamma
-	if extras:
-		glow = Sprite2D.new()
-		var g := GradientTexture2D.new()
-		g.fill = GradientTexture2D.FILL_RADIAL
-		g.fill_from = Vector2(0.5, 0.5)
-		g.fill_to = Vector2(0.5, 0.0)
-		g.width = 64
-		g.height = 64
-		var grad := Gradient.new()
-		grad.set_color(0, Color(1.0, 0.65, 0.2, 0.55))
-		grad.set_color(1, Color(1.0, 0.4, 0.1, 0.0))
-		g.gradient = grad
-		glow.texture = g
-		var add := CanvasItemMaterial.new()
-		add.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
-		glow.material = add
-		glow.scale = Vector2(2.0, 2.4)
-		b.fiamma_1.add_child(glow)
+	glow = Sprite2D.new()
+	glow.name = "bagliore"
+	var g := GradientTexture2D.new()
+	g.fill = GradientTexture2D.FILL_RADIAL
+	g.fill_from = Vector2(0.5, 0.5)
+	g.fill_to = Vector2(0.5, 0.0)
+	g.width = 64
+	g.height = 64
+	var grad := Gradient.new()
+	grad.set_color(0, Color(1.0, 0.65, 0.2, 0.55))
+	grad.set_color(1, Color(1.0, 0.4, 0.1, 0.0))
+	g.gradient = grad
+	glow.texture = g
+	var add := CanvasItemMaterial.new()
+	add.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	glow.material = add
+	glow.scale = Vector2(2.0, 2.4)
+	b.fiamma_1.add_child(glow)
 	mesh_rect("fiamma", p.cx, p.cy, p.w, p.h, 4, 8,
 		chain_weights(["fiamma_0", "fiamma_1", "fiamma_2", "fiamma_3"], 9.0)).name = "fiamma"
-	if extras:
-		embers = CPUParticles2D.new()
-		embers.amount = 10
-		embers.lifetime = 0.9
-		embers.local_coords = false
-		embers.emission_shape = CPUParticles2D.EMISSION_SHAPE_SPHERE
-		embers.emission_sphere_radius = 6.0
-		embers.direction = Vector2(0, -1)
-		embers.spread = 25.0
-		embers.gravity = Vector2(0, -60)
-		embers.initial_velocity_min = 20.0
-		embers.initial_velocity_max = 50.0
-		embers.scale_amount_min = 0.12
-		embers.scale_amount_max = 0.25
-		var ramp := Gradient.new()
-		ramp.set_color(0, Color(1, 0.85, 0.3, 1))
-		ramp.set_color(1, Color(1, 0.3, 0.05, 0))
-		embers.color_ramp = ramp
-		var dot := GradientTexture2D.new()
-		dot.fill = GradientTexture2D.FILL_RADIAL
-		dot.fill_from = Vector2(0.5, 0.5)
-		dot.fill_to = Vector2(0.5, 0.0)
-		dot.width = 16
-		dot.height = 16
-		var soft := Gradient.new()
-		soft.set_color(0, Color(1, 1, 1, 1))
-		soft.set_color(1, Color(1, 1, 1, 0))
-		dot.gradient = soft
-		embers.texture = dot
-		var add2 := CanvasItemMaterial.new()
-		add2.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
-		embers.material = add2
-		b.fiamma_2.add_child(embers)
+	embers = CPUParticles2D.new()
+	embers.name = "braci"
+	embers.amount = 10
+	embers.lifetime = 0.9
+	embers.local_coords = false
+	embers.emission_shape = CPUParticles2D.EMISSION_SHAPE_SPHERE
+	embers.emission_sphere_radius = 6.0
+	embers.direction = Vector2(0, -1)
+	embers.spread = 25.0
+	embers.gravity = Vector2(0, -60)
+	embers.initial_velocity_min = 20.0
+	embers.initial_velocity_max = 50.0
+	embers.scale_amount_min = 0.12
+	embers.scale_amount_max = 0.25
+	var ramp := Gradient.new()
+	ramp.set_color(0, Color(1, 0.85, 0.3, 1))
+	ramp.set_color(1, Color(1, 0.3, 0.05, 0))
+	embers.color_ramp = ramp
+	var dot := GradientTexture2D.new()
+	dot.fill = GradientTexture2D.FILL_RADIAL
+	dot.fill_from = Vector2(0.5, 0.5)
+	dot.fill_to = Vector2(0.5, 0.0)
+	dot.width = 16
+	dot.height = 16
+	var soft := Gradient.new()
+	soft.set_color(0, Color(1, 1, 1, 1))
+	soft.set_color(1, Color(1, 1, 1, 0))
+	dot.gradient = soft
+	embers.texture = dot
+	var add2 := CanvasItemMaterial.new()
+	add2.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	embers.material = add2
+	b.fiamma_2.add_child(embers)
 	for i in range(4):
 		flame_chain.append(Vector2.ZERO)
 		flame_prev.append(Vector2.ZERO)
@@ -372,15 +436,13 @@ func make_cape() -> void:
 	var uvs := PackedVector2Array()
 	var quads := []
 	var rest := PackedVector2Array()
-	var w: float = cp.w * cape_width
-	var hh: float = cp.h * cape_length
-	var top: float = cp.at[1] + cp.y + cp.h / 2 + cape_attach.y
-	var cx: float = cp.at[0] + cp.x + cape_attach.x
+	var cx: float = cp.at[0] + cp.x
+	var cy: float = cp.at[1] + cp.y
 	for r in range(rows + 1):
 		for c in range(cols + 1):
 			var u := float(c) / cols
 			var vv := float(r) / rows
-			rest.append(U(cx - w / 2 + u * w, top - vv * hh))
+			rest.append(U(cx - cp.w / 2 + u * cp.w, cy + cp.h / 2 - vv * cp.h))
 			uvs.append(Vector2(u * t2.get_width(), vv * t2.get_height()))
 	for r in range(rows):
 		for c in range(cols):
@@ -389,8 +451,28 @@ func make_cape() -> void:
 	cape.polygon = rest
 	cape.uv = uvs
 	cape.polygons = quads
+	cape.set_meta("cols", cols)
+	cape.set_meta("rows", rows)
 	add_child(cape)
-	# the constraints, once: pairs of points and their length (units)
+
+
+## The cloth from the cape's polygon (as drawn in the editor), with the knobs:
+## length and width stretch it from the middle of the pinned row, attach moves
+## it. The constraints (structural, vertical, both shears) are computed once.
+func cape_setup() -> void:
+	if cape == null:
+		return
+	var cols: int = cape.get_meta("cols", 4)
+	var rows: int = cape.get_meta("rows", 6)
+	var base := cape.polygon
+	var anchor := Vector2.ZERO
+	for c in range(cols + 1):
+		anchor += base[c]
+	anchor /= cols + 1
+	var rest := PackedVector2Array()
+	for q in base:
+		rest.append(anchor + U(cape_attach.x, cape_attach.y) + (q - anchor) * Vector2(cape_width, cape_length))
+	cape.polygon = rest
 	var ca := PackedInt32Array()
 	var cb := PackedInt32Array()
 	var cl := PackedFloat32Array()

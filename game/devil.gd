@@ -41,6 +41,17 @@ var current_face := "testa"
 var eyes: Array[Sprite2D] = []
 var eyes_node: Node2D
 var cape: Polygon2D
+@export_group("Mantello")
+## the same knobs as the Mantello panel of the Defold editor: weight (gravity
+## share), air (drag), stiffness (constraint passes), length and width (scale
+## of the drawing), attach (offset of the pinned row, units, y up)
+@export_range(0.1, 2.0) var cape_weight := 0.9
+@export_range(0.0, 12.0) var cape_air := 4.0
+@export_range(1, 8) var cape_stiffness := 3
+@export_range(0.5, 2.0) var cape_length := 1.0
+@export_range(0.5, 2.0) var cape_width := 1.0
+@export var cape_attach := Vector2.ZERO
+@export_group("")
 var cape_grid := {}              # the cloth: points, previous points, pins
 var flame_chain: Array[Vector2] = []
 var flame_prev: Array[Vector2] = []
@@ -361,13 +372,15 @@ func make_cape() -> void:
 	var uvs := PackedVector2Array()
 	var quads := []
 	var rest := PackedVector2Array()
-	var cx: float = cp.at[0] + cp.x
-	var cy: float = cp.at[1] + cp.y
+	var w: float = cp.w * cape_width
+	var hh: float = cp.h * cape_length
+	var top: float = cp.at[1] + cp.y + cp.h / 2 + cape_attach.y
+	var cx: float = cp.at[0] + cp.x + cape_attach.x
 	for r in range(rows + 1):
 		for c in range(cols + 1):
 			var u := float(c) / cols
 			var vv := float(r) / rows
-			rest.append(U(cx - cp.w / 2 + u * cp.w, cy + cp.h / 2 - vv * cp.h))
+			rest.append(U(cx - w / 2 + u * w, top - vv * hh))
 			uvs.append(Vector2(u * t2.get_width(), vv * t2.get_height()))
 	for r in range(rows):
 		for c in range(cols):
@@ -436,8 +449,8 @@ func cape_step(dt: float, solid: Callable) -> void:
 	var m := ca.size()
 	var steps := mini(3, maxi(1, roundi(dt * 60.0)))
 	var h := dt / steps
-	var drag := exp(-4.0 * h)
-	var fall := Vector2(0, gravity * 0.9) * h * h
+	var drag := exp(-cape_air * h)
+	var fall := Vector2(0, gravity * cape_weight) * h * h
 	for _s in range(steps):
 		for i in range(pins):
 			p[i] = fx * rest[i]
@@ -446,7 +459,7 @@ func cape_step(dt: float, solid: Callable) -> void:
 			var q := p[i]
 			p[i] = q + (q - o[i]) * drag + fall
 			o[i] = q
-		for _it in range(3):
+		for _it in range(cape_stiffness):
 			for c in range(m):
 				var i := ca[c]
 				var j := cb[c]

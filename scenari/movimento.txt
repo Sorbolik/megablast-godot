@@ -1,0 +1,34 @@
+# Scenario of the trajectory comparison: one line = N ticks with the keys held
+# (R right, L left, J jump), or an action: place X FROM (put the robot on the
+# ground under X, Y), blast DX DY (Lanciarune explosion near the feet, digs the
+# terrain), eagle DEG (Tonante recoil, shot towards DEG).
+30
+90 R
+1 RJ
+40 RJ
+20 R
+1 J
+6
+40
+1 LJ
+60 LJ
+120 L
+1 J
+3 J
+60
+blast -30 5
+120
+blast 25 0
+120 R
+eagle 200
+40
+eagle -60
+60
+1 RJ
+10 RJ
+20 R
+200 R
+120 L
+1 LJ
+80 LJ
+100

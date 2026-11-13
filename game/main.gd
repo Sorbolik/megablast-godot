@@ -23,7 +23,7 @@ var mask_img: Image
 var mask_tex: ImageTexture
 var zoom := NEAR
 var extras := true
-var new_art := true             # the new APPRENDISTA of WB-033 (N, NUOVO)
+var new_art := false            # the new APPRENDISTA of WB-033 (N, NUOVO)
 var lights := true               # Godot only: 2D lights (L, LUCI)
 var dark: CanvasModulate          # the scene a bit darker, so the lights show
 var touch := {left = false, right = false, jump = false}

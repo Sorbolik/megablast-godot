@@ -1,4 +1,11 @@
-; Spike di MegaBlast in Godot: vedi README.md
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
 config_version=5
 
 [application]
@@ -13,21 +20,14 @@ window/size/viewport_width=1280
 window/size/viewport_height=720
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
-window/vsync/vsync_mode=0
 window/handheld/orientation=4
-
-[physics]
-
-common/physics_ticks_per_second=60
-common/max_physics_steps_per_frame=8
+window/vsync/vsync_mode=0
 
 [rendering]
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 textures/vram_compression/import_etc2_astc=true
-anti_aliasing/quality/msaa_2d=0
-2d/snap/snap_2d_transforms_to_pixel=false
 
 [rendering.textures]
 

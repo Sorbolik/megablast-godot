@@ -1,0 +1,6 @@
+# Godot scrive i file di testo con LF: così Windows (autocrlf) non li vede cambiati
+* text=auto eol=lf
+*.png binary
+*.bin binary
+*.keystore binary
+*.mp4 binary

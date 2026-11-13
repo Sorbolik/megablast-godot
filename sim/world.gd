@@ -12,6 +12,7 @@ const CELL := 3
 const WORLD_W := 640 * CELL
 const WORLD_H := 360 * CELL
 const MARGIN_CELLS := 60
+const MARGIN := MARGIN_CELLS * CELL
 const GRID_W := 640 + 2 * MARGIN_CELLS
 const DT := 1.0 / 60.0
 const REF_H := 28.0

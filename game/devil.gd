@@ -17,8 +17,10 @@ extends Node2D
 const DISEGNO_H := 39.2          # world px from the feet to the top of the head
 const UNITS := 200.0             # drawing units, same height
 const ART := "res://art/apprendista/"
-## the new APPRENDISTA, drawn to bend (WB-033, tools/prepara_apprendista2.py)
-const ART_NEW := "res://art/apprendista2/"
+## the new APPRENDISTA: the one Sergio chose (WB-036 n. 2) in pieces (WB-037,
+## WB-039: heads without horns, horns apart), traced in vectors with the exact
+## palette and placed by registration on the chosen drawing (tools/apprendista3)
+const ART_NEW := "res://art/apprendista3/"
 ## the APPRENDISTA as a scene of the editor (tools/salva_scena.gd): bones,
 ## meshes, weights and the extras, all editable in Godot
 const SCENE := "res://game/apprendista.tscn"
@@ -38,7 +40,7 @@ const FACES := ["testa", "testa_felice", "testa_colpita", "testa_arrabbiata", "t
 ## every piece has a normal map (tools/normali.py), so the light wraps the
 ## round shapes; explosions flash (game/main.gd).
 @export var lights := true
-## the drawings: ART (today's) or ART_NEW (WB-033: whole limbs, face in layers)
+## the drawings: ART (today's) or ART_NEW (WB-037: whole heads, horns and scarf apart)
 @export var art := ART
 var brows: Array[Sprite2D] = []
 var mouth: Sprite2D
@@ -54,6 +56,8 @@ var current_face := "testa"
 var eyes: Array[Sprite2D] = []
 var eyes_node: Node2D
 var cape: Polygon2D
+var scarf: Polygon2D
+var scarf_tint: Polygon2D
 @export_group("Mantello")
 ## the same knobs as the Mantello panel of the Defold editor: weight (gravity
 ## share), air (drag), stiffness (constraint passes), length and width (scale
@@ -217,6 +221,7 @@ func strip_extras() -> void:
 	embers = null
 	if eyes_node and not rig.has("new"):
 		eyes_node.visible = false
+	update_scarf()
 
 
 ## units (y up) -> godot local (y down)
@@ -251,20 +256,39 @@ func build() -> void:
 	var body := bone("corpo", skel, Vector2.ZERO)
 	var forma := bone("forma", body, Vector2.ZERO)
 	var busto := bone("busto", forma, U(pv.busto[0], pv.busto[1]))
-	bone("petto", busto, U(-10.4, 42.8))
-	var collo := bone("collo", forma, U(pv.testa[0], pv.testa[1]))
-	bone("cranio", collo, U(-15.0, 94.8))
-	var f := bone("fiamma_0", collo, U(0, 82))
-	for i in range(1, 4):
-		f = bone("fiamma_%d" % i, f, U(0, 15))
-	var ba := bone("braccio_a", forma, U(pv.braccio[0], pv.braccio[1]))
-	bone("mano_a", bone("gomito_a", ba, U(-8.5, -27)), U(0, -24))
-	var bd := bone("braccio_d", forma, U(pv.braccio_dietro[0], pv.braccio_dietro[1]))
-	bone("mano_d", bone("gomito_d", bd, U(-5.1, -26)), U(0, -26))
-	var ga := bone("gamba_a", forma, U(pv.gamba[0], pv.gamba[1]))
-	bone("piede_a", bone("ginocchio_a", ga, U(-5.2, -34.8)), U(0, -32))
-	var gd := bone("gamba_d", forma, U(pv.gamba_dietro[0], pv.gamba_dietro[1]))
-	bone("piede_d", bone("ginocchio_d", gd, U(9.2, -34.6)), U(0, -32))
+	var w37 := rig.has("wb037")
+	if w37:
+		# WB-037: the joints come from the drawing (pivots and piece sizes)
+		bone("petto", busto, U(0, (pv.testa[1] - pv.busto[1]) * 0.7))
+		var collo := bone("collo", forma, U(pv.testa[0], pv.testa[1]))
+		var top: float = pc.testa.cy + pc.testa.h / 2
+		bone("cranio", collo, U(pc.testa.cx - pv.testa[0], (top - pv.testa[1]) * 0.75))
+		var fl: Dictionary = pc.fiamma
+		var f := bone("fiamma_0", collo, U(pv.fiamma[0] - pv.testa[0], pv.fiamma[1] - pv.testa[1]))
+		for i in range(1, 4):
+			f = bone("fiamma_%d" % i, f, U(0, fl.h * 0.27))
+		for side in [["braccio", "a", "gomito", "mano", 0.45, 0.42], ["braccio_dietro", "d", "gomito", "mano", 0.45, 0.42],
+				["gamba", "a", "ginocchio", "piede", 0.5, 0.38], ["gamba_dietro", "d", "ginocchio", "piede", 0.5, 0.38]]:
+			var spot: String = side[0]
+			var root_name: String = ("braccio_" if spot.begins_with("braccio") else "gamba_") + side[1]
+			var len: float = pv[spot][1] - (pc[spot].cy - pc[spot].h / 2)
+			var r := bone(root_name, forma, U(pv[spot][0], pv[spot][1]))
+			bone(side[3] + "_" + side[1], bone(side[2] + "_" + side[1], r, U(0, -len * side[4])), U(0, -len * side[5]))
+	else:
+		bone("petto", busto, U(-10.4, 42.8))
+		var collo := bone("collo", forma, U(pv.testa[0], pv.testa[1]))
+		bone("cranio", collo, U(-15.0, 94.8))
+		var f := bone("fiamma_0", collo, U(0, 82))
+		for i in range(1, 4):
+			f = bone("fiamma_%d" % i, f, U(0, 15))
+		var ba := bone("braccio_a", forma, U(pv.braccio[0], pv.braccio[1]))
+		bone("mano_a", bone("gomito_a", ba, U(-8.5, -27)), U(0, -24))
+		var bd := bone("braccio_d", forma, U(pv.braccio_dietro[0], pv.braccio_dietro[1]))
+		bone("mano_d", bone("gomito_d", bd, U(-5.1, -26)), U(0, -26))
+		var ga := bone("gamba_a", forma, U(pv.gamba[0], pv.gamba[1]))
+		bone("piede_a", bone("ginocchio_a", ga, U(-5.2, -34.8)), U(0, -32))
+		var gd := bone("gamba_d", forma, U(pv.gamba_dietro[0], pv.gamba_dietro[1]))
+		bone("piede_d", bone("ginocchio_d", gd, U(9.2, -34.6)), U(0, -32))
 	# the tail: a chain on the drawing's joints, turned like the rest angles
 	var tl: Dictionary = rig.tail
 	var j: Array = tl.joints
@@ -280,6 +304,9 @@ func build() -> void:
 	for n in b:
 		b[n].rest = b[n].transform
 
+	if w37:
+		build_wb037(tl)
+		return
 	# the pieces, from the back (the fermo clip's layers in MegaBlast)
 	var tail_poly := mesh_rect("coda", tl.left + tl.w / 2, tl.top - tl.h / 2, tl.w, tl.h, 8, 10,
 		chain_weights(["coda_0", "coda_1", "coda_2", "coda_3", "coda_4", "coda_punta"], 7.0))
@@ -302,12 +329,48 @@ func build() -> void:
 	for fc in FACES:
 		face_tex[fc] = tex(fc)
 	make_eyes()
-	if rig.has("new"):
+	if rig.has("brows"):
 		make_face()
 	make_flame()
 	if not rig.has("new"):
 		piece("gamba", ["gamba_a", "ginocchio_a", "piede_a"])
 		piece("braccio", ["braccio_a", "gomito_a", "mano_a"])
+
+
+## WB-037: the layers from the back, as the equipment needs them (helmet and
+## armor slot in between): back arm and legs, cape, tail, torso, (armor),
+## scarf (gone with the cape on), head, (helmet), horns, flame, front arm
+func build_wb037(tl: Dictionary) -> void:
+	piece("braccio_dietro", ["braccio_d", "gomito_d", "mano_d"])
+	piece("gamba_dietro", ["gamba_d", "ginocchio_d", "piede_d"])
+	piece("gamba", ["gamba_a", "ginocchio_a", "piede_a"])
+	if rig.get("cape"):
+		make_cape()
+	var tail_poly := mesh_rect("coda", tl.left + tl.w / 2, tl.top - tl.h / 2, tl.w, tl.h, 8, 10,
+		chain_weights(["coda_0", "coda_1", "coda_2", "coda_3", "coda_4", "coda_punta"], 7.0))
+	tail_poly.name = "coda"
+	piece("busto", ["busto", "petto"])
+	scarf = piece("sciarpa", ["petto"])
+	var tint := piece("sciarpa", ["petto"], "sciarpa_tinta")
+	tint.modulate = team_color
+	scarf_tint = tint
+	head_poly = piece("testa", [], "testa", head_weights)
+	for fc in FACES:
+		face_tex[fc] = tex(fc)
+	make_eyes()
+	piece("corno_dietro", ["cranio"])
+	piece("corno", ["cranio"])
+	make_flame()
+	piece("braccio", ["braccio_a", "gomito_a", "mano_a"])
+	update_scarf()
+
+
+## the scarf goes when the cape is on: the cape wraps the neck (Sergio, 13 nov)
+func update_scarf() -> void:
+	if scarf:
+		var on := cape == null or not cape.visible
+		scarf.visible = on
+		scarf_tint.visible = on
 
 
 ## the new drawing's face: eyebrows and mouth over the bare head, on the node
@@ -364,6 +427,12 @@ func chain_weights(names: Array, sigma: float) -> Callable:
 
 ## the head: rigid on the neck, the top (horns) on the skull bone: it can squash
 func head_weights(p: Vector2) -> Dictionary:
+	if rig.has("wb037"):
+		var hd: Dictionary = rig.pieces.testa
+		var y0: float = hd.cy
+		var y1: float = hd.cy + hd.h * 0.5
+		var tp := smoothstep(-y0, -y1, p.y)
+		return {"collo": 1.0 - tp, "cranio": tp}
 	var top := smoothstep(-185.0, -225.0, p.y)
 	return {"collo": 1.0 - top, "cranio": top}
 
@@ -752,39 +821,56 @@ func animate(dt: float, pos: Vector2, grounded: bool, moving: int, solid: Callab
 		cape_step(dt, solid)
 
 
+## WB-037: the clips were made on MegaBlast's pivots; here the drawing is already
+## in the chosen pose (R1), so every channel counts from the fermo clip's value
+var fermo0 := {}
+func cv(c: String) -> float:
+	var val := pose.get_c(c)
+	if rig.has("wb037"):
+		if fermo0.is_empty():
+			var f: Dictionary = Pose.clips.fermo.tracks
+			for n in f:
+				fermo0[n] = Pose.value(f[n], 0.0, Pose.clips.fermo.duration, true)
+		val -= fermo0.get(c, Pose.neutral(c)) - Pose.neutral(c)
+	return val
+
+
 func apply_pose(dt: float) -> void:
-	var po := pose
+	var po := self
 	var q: float = max(0.4, x[SQ])
 	var lx := 1 + (1 - q) * 0.8
 	var pv: Dictionary = rig.pivots
 	b.forma.scale = Vector2(lx, q)
-	b.corpo.rotation = -(x[LEAN] + po.get_c("corpo"))
-	b.corpo.position = Vector2(-x[SHOVE] * UNITS * 0.75 + po.get_c("corpo_x"), -po.get_c("salto"))
+	b.corpo.rotation = -(x[LEAN] + po.cv("corpo"))
+	b.corpo.position = Vector2(-x[SHOVE] * UNITS * 0.75 + po.cv("corpo_x"), -po.cv("salto"))
 	var follow: float = min(1.0, dt * 16)
-	braccia[0] += (po.get_c("braccio_a") - braccia[0]) * follow
-	braccia[1] += (po.get_c("braccio_d") - braccia[1]) * follow
-	gambe[0] += (po.get_c("gamba_a") - gambe[0]) * follow
-	gambe[1] += (po.get_c("gamba_d") - gambe[1]) * follow
-	b.braccio_a.rotation = -braccia[0]
-	b.braccio_d.rotation = -braccia[1]
+	braccia[0] += (po.cv("braccio_a") - braccia[0]) * follow
+	braccia[1] += (po.cv("braccio_d") - braccia[1]) * follow
+	gambe[0] += (po.cv("gamba_a") - gambe[0]) * follow
+	gambe[1] += (po.cv("gamba_d") - gambe[1]) * follow
+	var lr: Dictionary = rig.get("limb_rest", {})
+	b.braccio_a.rotation = -(braccia[0] + lr.get("braccio", 0.0))
+	b.braccio_d.rotation = -(braccia[1] + lr.get("braccio_dietro", 0.0))
 	b.gamba_a.rotation = -gambe[0]
 	b.gamba_d.rotation = -gambe[1]
-	b.gamba_a.position = U(pv.gamba[0] + po.get_c("gamba_a_x"), pv.gamba[1] + po.get_c("alza_a"))
-	b.gamba_d.position = U(pv.gamba_dietro[0] + po.get_c("gamba_d_x"), pv.gamba_dietro[1] + po.get_c("alza_d"))
-	b.braccio_a.position = U(pv.braccio[0] + po.get_c("braccio_a_x"), pv.braccio[1] + po.get_c("braccio_a_y"))
-	b.braccio_d.position = U(pv.braccio_dietro[0] + po.get_c("braccio_d_x"), pv.braccio_dietro[1] + po.get_c("braccio_d_y"))
-	b.busto.position = U(pv.busto[0] + po.get_c("busto_x"), pv.busto[1] + po.get_c("busto_y"))
-	b.busto.rotation = -po.get_c("busto")
+	b.gamba_a.position = U(pv.gamba[0] + po.cv("gamba_a_x"), pv.gamba[1] + po.cv("alza_a"))
+	b.gamba_d.position = U(pv.gamba_dietro[0] + po.cv("gamba_d_x"), pv.gamba_dietro[1] + po.cv("alza_d"))
+	b.braccio_a.position = U(pv.braccio[0] + po.cv("braccio_a_x"), pv.braccio[1] + po.cv("braccio_a_y"))
+	b.braccio_d.position = U(pv.braccio_dietro[0] + po.cv("braccio_d_x"), pv.braccio_dietro[1] + po.cv("braccio_d_y"))
+	b.busto.position = U(pv.busto[0] + po.cv("busto_x"), pv.busto[1] + po.cv("busto_y"))
+	b.busto.rotation = -po.cv("busto")
 	var tl: Dictionary = rig.tail
-	b.coda_0.position = U(tl.joints[0][0] + po.get_c("coda_x"), tl.joints[0][1] + po.get_c("coda_y"))
-	tail_step(dt, po.get_c("coda_gira"))
-	b.collo.position = U(pv.testa[0] + po.get_c("testa_x"), pv.testa[1] + po.get_c("testa_y"))
+	b.coda_0.position = U(tl.joints[0][0] + po.cv("coda_x"), tl.joints[0][1] + po.cv("coda_y"))
+	tail_step(dt, po.cv("coda_gira"))
+	b.collo.position = U(pv.testa[0] + po.cv("testa_x"), pv.testa[1] + po.cv("testa_y"))
 	b.collo.rotation = -x[HEAD]
 	b.collo.scale = Vector2(1 / lx, 1 / q)
-	b.fiamma_0.position = U(po.get_c("fiamma_x"), 82 + po.get_c("fiamma_y"))
-	b.fiamma_0.rotation = -po.get_c("fiamma")
-	var sqf := po.get_c("fiamma_schiaccia")
-	b.fiamma_0.scale = Vector2(po.get_c("fiamma_scala_x") / sqf, po.get_c("fiamma_scala_y") * sqf)
+	var fy: float = (pv.fiamma[1] - pv.testa[1]) if rig.has("wb037") else 82.0
+	var fx: float = (pv.fiamma[0] - pv.testa[0]) if rig.has("wb037") else 0.0
+	b.fiamma_0.position = U(fx + po.cv("fiamma_x"), fy + po.cv("fiamma_y"))
+	b.fiamma_0.rotation = -po.cv("fiamma")
+	var sqf := po.cv("fiamma_schiaccia")
+	b.fiamma_0.scale = Vector2(po.cv("fiamma_scala_x") / sqf, po.cv("fiamma_scala_y") * sqf)
 	if extras:
 		# the spike's extras on the mesh: the chest breathes, the skull squashes a
 		# little after the body (jelly), elbows and knees follow through
@@ -792,7 +878,7 @@ func apply_pose(dt: float) -> void:
 		var jelly: float = clampf(1.0 + (x[SQ] - 1.0) * 0.6, 0.85, 1.15)
 		b.cranio.scale = Vector2(1.0 / jelly, jelly)
 		for i in range(2):
-			var target: float = clampf(-(braccia[i] - (po.get_c("braccio_a") if i == 0 else po.get_c("braccio_d"))) * 2.0 + 0.15, -0.3, 0.9)
+			var target: float = clampf(-(braccia[i] - (cv("braccio_a") if i == 0 else cv("braccio_d"))) * 2.0 + 0.15, -0.3, 0.9)
 			elbow_v[i] += (120.0 * (target - elbow[i]) - 14.0 * elbow_v[i]) * dt
 			elbow[i] += elbow_v[i] * dt
 		b.gomito_a.rotation = -elbow[0]
@@ -883,7 +969,7 @@ func eyes_step(dt: float) -> void:
 func flame_step(dt: float) -> void:
 	var names := ["fiamma_0", "fiamma_1", "fiamma_2", "fiamma_3"]
 	var base: Vector2 = b.fiamma_0.global_position
-	var seg := 15.0 * k
+	var seg: float = (float(rig.pieces.fiamma.h) * 0.27 if rig.has("wb037") else 15.0) * k
 	if flame_chain[0] == Vector2.ZERO:
 		for i in range(4):
 			flame_chain[i] = base + Vector2(0, -seg * i)

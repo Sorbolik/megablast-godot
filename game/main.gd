@@ -62,6 +62,8 @@ func _ready() -> void:
 		lights = false
 	if "--vecchio" in args:
 		new_art = false
+	if "--nuovo" in args:
+		new_art = true
 	dark = CanvasModulate.new()
 	add_child(dark)
 	dark.color = DARK if lights else Color.WHITE

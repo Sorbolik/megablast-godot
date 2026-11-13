@@ -31,6 +31,8 @@ var scenario: Array = []
 var photo := ""
 var photo_t := 2.0
 var fx_layer: Node2D
+var sequence: Array = []
+var results: PackedStringArray = []
 var held := ""                   # keys held from the command line (photos): R L J
 
 
@@ -245,7 +247,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_X:
 				toggle_extras()
 			KEY_M:
-				start_measure(8, 30)
+				start_sequence()
 			KEY_F:
 				robots[0][1].hit()
 	if event is InputEventMouseButton and event.pressed:
@@ -367,7 +369,24 @@ func button(key: String) -> void:
 		"extra":
 			toggle_extras()
 		"measure":
-			start_measure(8, 30)
+			start_sequence()
+
+
+## MISURA: 4 and 8 devils, each without and with the spike's extras, 20 s
+## each (+5 s to settle): the results stay on the screen
+func start_sequence() -> void:
+	sequence = [[4, false], [4, true], [8, false], [8, true]]
+	results.clear()
+	next_in_sequence()
+
+
+func next_in_sequence() -> void:
+	if sequence.is_empty():
+		return
+	var step: Array = sequence.pop_front()
+	if extras != step[1]:
+		toggle_extras()
+	start_measure(step[0], 20)
 
 
 func start_measure(n: int, secs: float) -> void:
@@ -383,6 +402,8 @@ func update_hud(dt: float) -> void:
 	var draw := Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)
 	hud.text = "%d FPS  %.2f ms/frame  logica %.2f ms  draw call %d  diavoletti %d  extra %s" % [
 		fps, dt * 1000.0, cpu, draw, robots.size(), "sì" if extras else "no"]
+	for r in results:
+		hud.text += "\n" + r
 	if measuring:
 		measure.warm -= dt
 		if measure.warm < 0:
@@ -416,6 +437,9 @@ func finish_measure() -> void:
 	f.seek_end()
 	f.store_line(line)
 	f.close()
-	hud.text += "\n" + line
-	if "--misura" in OS.get_cmdline_user_args():
+	results.append("%d diavoletti, extra %s: %.2f ms (%.0f FPS), 1%% peggiori %.2f ms, peggiore %.1f ms" % [
+		measure.n, "sì" if extras else "no", avg, 1000.0 / avg, p99, worst])
+	if not sequence.is_empty():
+		next_in_sequence()
+	elif "--misura" in OS.get_cmdline_user_args():
 		get_tree().quit()

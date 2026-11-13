@@ -356,28 +356,51 @@ func make_cape() -> void:
 	cape = Polygon2D.new()
 	cape.name = "mantello"
 	cape.texture = t2
-	var cols := 5
-	var rows := 7
+	var cols := 4
+	var rows := 6
 	var uvs := PackedVector2Array()
 	var quads := []
-	var local_pts: Array[Vector2] = []
+	var rest := PackedVector2Array()
 	var cx: float = cp.at[0] + cp.x
 	var cy: float = cp.at[1] + cp.y
 	for r in range(rows + 1):
 		for c in range(cols + 1):
 			var u := float(c) / cols
 			var vv := float(r) / rows
-			local_pts.append(U(cx - cp.w / 2 + u * cp.w, cy + cp.h / 2 - vv * cp.h))
+			rest.append(U(cx - cp.w / 2 + u * cp.w, cy + cp.h / 2 - vv * cp.h))
 			uvs.append(Vector2(u * t2.get_width(), vv * t2.get_height()))
 	for r in range(rows):
 		for c in range(cols):
 			var i := r * (cols + 1) + c
 			quads.append(PackedInt32Array([i, i + 1, i + cols + 2, i + cols + 1]))
-	cape.polygon = PackedVector2Array(local_pts)
+	cape.polygon = rest
 	cape.uv = uvs
 	cape.polygons = quads
 	add_child(cape)
-	cape_grid = {cols = cols, rows = rows, rest = local_pts, p = [], o = [], ready = false}
+	# the constraints, once: pairs of points and their length (units)
+	var ca := PackedInt32Array()
+	var cb := PackedInt32Array()
+	var cl := PackedFloat32Array()
+	for r in range(rows + 1):
+		for c in range(cols + 1):
+			var i := r * (cols + 1) + c
+			var pairs := []
+			if c < cols:
+				pairs.append(i + 1)
+			if r < rows:
+				pairs.append(i + cols + 1)
+				if c < cols:
+					pairs.append(i + cols + 2)
+				if c > 0:
+					pairs.append(i + cols)
+			for j in pairs:
+				if i <= cols and j <= cols:
+					continue
+				ca.append(i)
+				cb.append(j)
+				cl.append(rest[i].distance_to(rest[j]))
+	cape_grid = {pins = cols + 1, rest = rest, p = PackedVector2Array(), o = PackedVector2Array(),
+		ca = ca, cb = cb, cl = cl, ready = false}
 
 
 ## the shape's frame (forma bone) in the parent's space: the pins follow it
@@ -385,89 +408,77 @@ func forma_xform() -> Transform2D:
 	return transform * b.corpo.transform * b.forma.transform
 
 
+## The cloth (Verlet, like battle/cloth.lua but a whole 2D grid instead of one
+## chain): the top row pinned to the shoulders, the rest falls, keeps its
+## lengths, can't pass through the body to the front nor into the terrain.
+## Fixed 60 Hz steps, so it behaves the same at every frame rate.
 func cape_step(dt: float, solid: Callable) -> void:
 	if cape == null:
 		return
 	var g := cape_grid
-	var cols: int = g.cols
-	var n: int = (cols + 1) * (g.rows + 1)
+	var rest: PackedVector2Array = g.rest
+	var n := rest.size()
+	var pins: int = g.pins
 	var fx := forma_xform()
+	var p: PackedVector2Array = g.p
+	var o: PackedVector2Array = g.o
 	if not g.ready:
-		g.p.clear()
-		g.o.clear()
+		p.resize(n)
+		o.resize(n)
 		for i in range(n):
-			var w: Vector2 = fx * g.rest[i]
-			g.p.append(w)
-			g.o.append(w)
+			p[i] = fx * rest[i]
+			o[i] = p[i]
 		g.ready = true
-	# fixed steps, like battle/cloth.lua: same behaviour at every frame rate
-	var steps := maxi(1, ceili(dt * 120.0))
+	var to_forma := fx.affine_inverse()
+	var ca: PackedInt32Array = g.ca
+	var cb: PackedInt32Array = g.cb
+	var cl: PackedFloat32Array = g.cl
+	var m := ca.size()
+	var steps := mini(3, maxi(1, roundi(dt * 60.0)))
 	var h := dt / steps
 	var drag := exp(-4.0 * h)
-	var to_forma := fx.affine_inverse()
+	var fall := Vector2(0, gravity * 0.9) * h * h
 	for _s in range(steps):
-		for i in range(n):
-			if i <= cols:
-				continue
-			var p: Vector2 = g.p[i]
-			var vel: Vector2 = (p - g.o[i]) * drag
-			g.o[i] = p
-			g.p[i] = p + vel + Vector2(0, gravity * 0.9) * h * h
-		for i in range(cols + 1):
-			g.p[i] = fx * g.rest[i]
-			g.o[i] = g.p[i]
-		for _it in range(4):
-			for r in range(g.rows + 1):
-				for c in range(cols + 1):
-					var i := r * (cols + 1) + c
-					if c < cols:
-						relax(g, i, i + 1)
-					if r < g.rows:
-						relax(g, i, i + cols + 1)
-						if c < cols:
-							relax(g, i, i + cols + 2, 1.0)
-			for i in range(cols + 1, n):
-				var p: Vector2 = g.p[i]
-				# the body: the cloth hangs behind it and can't go through it to the
-				# front (a wall in the shape's frame, a little in front of where
-				# each point is drawn at rest); it can fly back freely
-				var lp: Vector2 = to_forma * p
-				var front: float = g.rest[i].x + 6.0
-				if lp.x > front:
-					lp.x = front
-					p = fx * lp
-				if solid.is_valid() and solid.call(p):
-					p = g.o[i]
-				g.p[i] = p
+		for i in range(pins):
+			p[i] = fx * rest[i]
+			o[i] = p[i]
+		for i in range(pins, n):
+			var q := p[i]
+			p[i] = q + (q - o[i]) * drag + fall
+			o[i] = q
+		for _it in range(3):
+			for c in range(m):
+				var i := ca[c]
+				var j := cb[c]
+				var d := p[j] - p[i]
+				var len := d.length()
+				if len < 1e-6:
+					continue
+				var corr := d * ((len - cl[c] * k) / len)
+				if i < pins:
+					p[j] -= corr
+				else:
+					p[i] += corr * 0.5
+					p[j] -= corr * 0.5
+		for i in range(pins, n):
+			var lp := to_forma * p[i]
+			var front := rest[i].x + 6.0
+			if lp.x > front:
+				lp.x = front
+				p[i] = fx * lp
+	# the terrain: once per frame, only the lower half (the top is on the body)
+	if solid.is_valid():
+		for i in range(n / 2, n):
+			if solid.call(p[i]):
+				p[i] = o[i]
+	g.p = p
+	g.o = o
 	var inv := transform.affine_inverse()
 	var out := PackedVector2Array()
 	out.resize(n)
 	for i in range(n):
-		out[i] = inv * g.p[i]
+		out[i] = inv * p[i]
 	cape.polygon = out
-
-
-func relax(g: Dictionary, i: int, j: int, stiff := 1.0) -> void:
-	var rest: float = (g.rest[i] as Vector2).distance_to(g.rest[j]) * k
-	var a: Vector2 = g.p[i]
-	var c: Vector2 = g.p[j]
-	var d := c - a
-	var len := d.length()
-	if len < 1e-6:
-		return
-	var diff := (len - rest) / len * 0.5 * stiff
-	var cols: int = g.cols
-	var pin_i := i <= cols
-	var pin_j := j <= cols
-	if pin_i and pin_j:
-		return
-	if pin_i:
-		g.p[j] = c - d * diff * 2.0
-	elif pin_j:
-		g.p[i] = a + d * diff * 2.0
-	else:
-		g.p[i] = a + d * diff
-		g.p[j] = c - d * diff
 
 
 # --- the driver: the same logic as battle/scoria.lua ------------------------------

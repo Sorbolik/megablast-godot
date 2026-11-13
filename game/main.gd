@@ -4,7 +4,7 @@ extends Node2D
 ## frame rate (interpolated), the APPRENDISTA rig (game/devil.gd).
 ##
 ## Controls: A/D or arrows walk, W/space/up jump, Q explosion at the feet,
-## E Tonante recoil toward the mouse, X spike extras on/off, M measurement,
+## E Tonante recoil toward the mouse, X spike extras on/off, L 2D lights on/off, M measurement,
 ## F hit face, mouse wheel zoom. On the phone: the buttons at the bottom.
 ##
 ## Command line (after --): --misura N [--secondi S] [--senza-extra]
@@ -12,6 +12,7 @@ extends Node2D
 ## the console and in user://misure.txt. --foto FILE: a screenshot after 2 s.
 
 const WorldScript := preload("res://sim/world.gd")
+const DARK := Color(0.42, 0.4, 0.52)
 const NEAR := 2.2                # the nearest zoom (battle/camera.lua)
 const MAP_PX := 1.5              # cortile_2.png: 1.5 image pixels per world unit
 
@@ -22,6 +23,8 @@ var mask_img: Image
 var mask_tex: ImageTexture
 var zoom := NEAR
 var extras := true
+var lights := true               # Godot only: 2D lights (L, LUCI)
+var dark: CanvasModulate          # the scene a bit darker, so the lights show
 var touch := {left = false, right = false, jump = false}
 var hud: Label
 var measuring := false
@@ -53,6 +56,11 @@ func _ready() -> void:
 	add_child(cam)
 	if "--senza-extra" in args:
 		extras = false
+	if "--senza-luci" in args:
+		lights = false
+	dark = CanvasModulate.new()
+	add_child(dark)
+	dark.color = DARK if lights else Color.WHITE
 	add_robot(0)
 	build_hud()
 	var i := args.find("--misura")
@@ -161,7 +169,7 @@ func add_robot(spawn: int) -> Array:
 	if spawn >= World.SPAWNS.size():
 		rb.x += 60 * (spawn / World.SPAWNS.size())
 		rb.y = world.terrain.ground_below(rb.x, rb.y + 200)
-	var d: Devil = Devil.make(extras)
+	var d: Devil = Devil.make(extras, lights)
 	d.gravity = world.gravity
 	add_child(d)
 	var entry := [rb, d, Vector2(rb.x, rb.y), {line = 0, left = 0, offset = spawn * 37}]
@@ -244,6 +252,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				world.fire_eagle(rb, atan2((World.WORLD_H - m.y) - (rb.y + 20), m.x - rb.x))
 			KEY_X:
 				toggle_extras()
+			KEY_L:
+				toggle_lights()
 			KEY_M:
 				start_sequence()
 			KEY_F:
@@ -257,9 +267,19 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func toggle_extras() -> void:
 	extras = not extras
+	respawn_devils()
+
+
+func toggle_lights() -> void:
+	lights = not lights
+	dark.color = DARK if lights else Color.WHITE
+	respawn_devils()
+
+
+func respawn_devils() -> void:
 	for e in robots:
 		var old: Devil = e[1]
-		var d: Devil = Devil.make(extras)
+		var d: Devil = Devil.make(extras, lights)
 		d.gravity = world.gravity
 		add_child(d)
 		e[1] = d
@@ -286,6 +306,29 @@ func boom(at: Vector2, r: float) -> void:
 	p.position = at
 	fx_layer.add_child(p)
 	get_tree().create_timer(1.0).timeout.connect(p.queue_free)
+	if lights:
+		# the flash: lights the devils, the walls and the smoke, then dies out
+		var flash := PointLight2D.new()
+		var g := GradientTexture2D.new()
+		g.fill = GradientTexture2D.FILL_RADIAL
+		g.fill_from = Vector2(0.5, 0.5)
+		g.fill_to = Vector2(0.5, 0.0)
+		g.width = 256
+		g.height = 256
+		var grad := Gradient.new()
+		grad.set_color(0, Color(1, 1, 1, 1))
+		grad.set_color(1, Color(1, 1, 1, 0))
+		g.gradient = grad
+		flash.texture = g
+		flash.texture_scale = r / 40.0
+		flash.color = Color(1.0, 0.75, 0.4)
+		flash.energy = 3.0
+		flash.height = 30.0
+		flash.position = at
+		fx_layer.add_child(flash)
+		var tw := create_tween()
+		tw.tween_property(flash, "energy", 0.0, 0.5).set_ease(Tween.EASE_OUT)
+		tw.tween_callback(flash.queue_free)
 	cam.offset = Vector2(randf_range(-4, 4), randf_range(-4, 4))
 
 
@@ -336,7 +379,7 @@ func build_hud() -> void:
 	bar.add_theme_constant_override("separation", 12)
 	layer.add_child(bar)
 	for spec in [["◀", "left"], ["▶", "right"], ["", ""], ["SALTA", "jump"], ["BOOM", "boom"],
-			["TONANTE", "eagle"], ["EXTRA", "extra"], ["MISURA", "measure"]]:
+			["TONANTE", "eagle"], ["EXTRA", "extra"], ["LUCI", "lights"], ["MISURA", "measure"]]:
 		if spec[0] == "":
 			var gap := Control.new()
 			gap.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -365,6 +408,8 @@ func button(key: String) -> void:
 			world.fire_eagle(rb, deg_to_rad(200.0 if robots[0][1].face > 0 else -20.0))
 		"extra":
 			toggle_extras()
+		"lights":
+			toggle_lights()
 		"measure":
 			start_sequence()
 

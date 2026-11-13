@@ -32,6 +32,10 @@ const FACES := ["testa", "testa_felice", "testa_colpita", "testa_arrabbiata", "t
 ## (rigid pieces, no cloth, no eyes): the A/B in the measurements.
 @export var extras := true
 @export var team_color := Color(0.85, 0.2, 0.2)
+## Godot only: 2D lights. The flame lights the devil and what is around it,
+## every piece has a normal map (tools/normali.py), so the light wraps the
+## round shapes; explosions flash (game/main.gd).
+@export var lights := true
 
 var k := DISEGNO_H / UNITS
 var rig: Dictionary
@@ -61,6 +65,7 @@ var flame_prev: Array[Vector2] = []
 var flame_rot := [0.0, 0.0, 0.0]
 var embers: CPUParticles2D
 var glow: Sprite2D
+var flame_light: PointLight2D
 var gravity := 193.8             # world px/s^2, set from the simulation
 
 # the driver state (as battle/scoria.lua)
@@ -105,16 +110,60 @@ func _ready() -> void:
 	if not extras:
 		strip_extras()
 	cape_setup()
+	if lights:
+		light_up()
+
+
+## every piece gets its normal map, and the flame a light
+func light_up() -> void:
+	for n in get_children():
+		if n is Polygon2D and n.texture:
+			n.texture = lit(n.texture)
+	for fc in face_tex:
+		face_tex[fc] = lit(face_tex[fc])
+	var lamp := PointLight2D.new()
+	lamp.name = "luce_fiamma"
+	var g := GradientTexture2D.new()
+	g.fill = GradientTexture2D.FILL_RADIAL
+	g.fill_from = Vector2(0.5, 0.5)
+	g.fill_to = Vector2(0.5, 0.0)
+	g.width = 256
+	g.height = 256
+	var grad := Gradient.new()
+	grad.set_color(0, Color(1, 1, 1, 1))
+	grad.set_color(1, Color(1, 1, 1, 0))
+	g.gradient = grad
+	lamp.texture = g
+	lamp.texture_scale = 2.4
+	lamp.color = Color(1.0, 0.62, 0.28)
+	lamp.energy = 1.5
+	lamp.height = 40.0
+	b.fiamma_1.add_child(lamp)
+	flame_light = lamp
+
+
+## a texture with its normal map, when there is one
+func lit(t: Texture2D) -> Texture2D:
+	if t is CanvasTexture:
+		return t
+	var nm := t.resource_path.get_basename() + "_n.png"
+	if not ResourceLoader.exists(nm):
+		return t
+	var ct := CanvasTexture.new()
+	ct.diffuse_texture = t
+	ct.normal_texture = load(nm)
+	return ct
 
 
 ## a devil: from the editor's scene when there is one, otherwise built here
-static func make(with_extras: bool) -> Devil:
+static func make(with_extras: bool, with_lights := true) -> Devil:
 	var d: Devil
 	if ResourceLoader.exists(SCENE):
 		d = (load(SCENE) as PackedScene).instantiate()
 	else:
 		d = (load("res://game/devil.gd") as GDScript).new()
 	d.extras = with_extras
+	d.lights = with_lights
 	return d
 
 
@@ -821,5 +870,7 @@ func flame_step(dt: float) -> void:
 		acc += bn.rotation
 	var stretch := clampf(1.0 + vy / 2000.0, 0.85, 1.25)
 	b.fiamma_1.scale = Vector2(1.0 / sqrt(stretch), stretch)
+	if flame_light:
+		flame_light.energy = 1.4 + 0.25 * sin(t * 11.0) * sin(t * 6.1)
 	if glow:
 		glow.modulate.a = 0.75 + 0.25 * sin(t * 13.0) * sin(t * 7.3)
